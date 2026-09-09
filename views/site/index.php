@@ -10,6 +10,9 @@ $this->params['meta_keywords'] = 'yii, yii2, php, framework, web application, hi
 ?>
 <div class="site-index">
 
+<!-- Incluimos el banner diagonal partido con transparencia glassmorphism -->
+    <?= $this->render('index_banner') ?>
+
     <!-- Hero banner with Yii gradient -->
     <div class="hero-banner text-white rounded-4 p-5 mb-4 position-relative overflow-hidden">
         <?= Html::img(Yii::getAlias('@web/images/yii3_full_white_for_dark.svg'), [

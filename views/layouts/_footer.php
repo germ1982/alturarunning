@@ -4,26 +4,22 @@ use yii\helpers\Html;
 
 ?>
 
-<footer id="footer" class="mt-auto py-3 bg-light">
-      <div class="container">
-            <div class="row text-muted">
-                  <div class="col-md-6 text-center text-md-start footer-link">
-                        <?= 
-                        //\yii\helpers\Html::a('&copy; G.E.R.M. Servicios En Informatica ' . date('Y'), 'https://www.tiktok.com/@g.e.r.m5/video/7625761791905172756?is_from_webapp=1&sender_device=pc&web_id=7649578402966144532', 
-                              \yii\helpers\Html::a('&copy; G.E.R.M. Servicios En Informatica ' . date('Y'), 'https://germ1982.github.io/germweb/', 
-                              [
-                              'target' => '_blank',
-                              'style' => 'text-decoration: none;'
-                        ]) 
-                        ?>
-                  </div>
-                  <div class="col-md-6 text-center text-md-end">
+<style><?php include __DIR__ . '/layout.css'; ?></style>
 
-                        <?= Html::a('Acerca de Comunidad Del Valle', ['/site/about'], ['class' => 'footer-link']) ?>
-                        &nbsp; | &nbsp;
-                        <?= Html::a('Contacto', ['/site/contact'], ['class' => 'footer-link']) ?>
-
-                  </div>
+<footer id="footer">
+    <div class="container">
+        <div class="footer-container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                    <a href="https://alturarunning.com" target="_blank" style=" font-weight: 500;">
+                        &copy; G.E.R.M. Servicios En Informatica 2026
+                    </a>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" style="margin-right: 20px;">Acerca de Altura Running Team</a>
+                    <a href="#">Contacto</a>
+                </div>
             </div>
-      </div>
+        </div>
+    </div>
 </footer>

@@ -1,0 +1,187 @@
+/* Fondo general de la página */
+body {
+    background: url("../web/images/sistema/background.jpg") no-repeat center
+        center fixed;
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Fondo de piedra oscura para el footer */
+#footer {
+    background: rgb(16 16 16 / 65%);
+    backdrop-filter: blur(1px);
+    padding: 30px 0;
+    border-top: 3px solid rgba(255 0 0 / 8%);
+}
+
+/* Contenedor con efecto translúcido y bordes redondeados tipo glassmorphism */
+#footer .footer-container {
+}
+/* Estilo de los textos y enlaces dentro del footer */
+#footer a {
+    color: #cccccc;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+#footer a:hover {
+    color: #e53935; /* El rojo característico de la marca */
+    text-shadow:
+        0 0 10px rgba(255, 51, 51, 0.8),
+        0 0 20px rgba(255, 51, 51, 0.5);
+}
+
+/* Estilos generales del Header */
+#header {
+    background: url("../web/images/sistema/background.jpg") no-repeat center
+        center fixed;
+    background-size: cover;
+
+    margin: 0;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: 20px;
+    border-image: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 51, 51, 0.8) 30%,
+            rgba(255, 51, 51, 0.8) 70%,
+            transparent 100%
+        )
+        1;
+}
+
+#header .header-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+/* Logo circular de la izquierda con borde sutil */
+#header .header-logo {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    background-color: #1a1a1a;
+}
+
+/* Barra central translúcida (Glassmorphism) */
+#header .header-glass-bar {
+    background: rgb(35 35 35 / 65%);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 40px;
+
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+#header .header-glass-bar {
+    background: rgb(35 35 35 / 65%);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Enlaces del menú y efecto de brillo rojo al pasar el mouse */
+#header .navbar-nav .nav-link {
+    color: #cccccc !important;
+    text-decoration: none;
+    transition:
+        color 0.2s ease,
+        text-shadow 0.2s ease;
+    padding: 0.5rem 1rem !important;
+}
+
+#header .navbar-nav .nav-link:hover {
+    color: #ff3333 !important;
+    text-shadow:
+        0 0 10px rgba(255, 51, 51, 0.8),
+        0 0 20px rgba(255, 51, 51, 0.5);
+}
+
+/* Iconos de la derecha */
+#header .header-icons .icon-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease;
+}
+
+#header .header-icons .header-icon-link:hover .icon-img {
+    filter: drop-shadow(0 0 8px rgba(255, 51, 51, 0.8));
+    transform: scale(1.05);
+}
+
+/* Estilo del ícono de usuario en el botón de login */
+#header .header-icons .header-user-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Enlace de Login y Logout en la derecha con el color y efecto del menú */
+#header .header-icons .header-login-btn,
+#header .header-icons .header-logout-btn {
+    color: #cccccc !important;
+    text-decoration: none;
+    transition:
+        color 0.2s ease,
+        text-shadow 0.2s ease;
+    padding: 0.5rem 1rem !important;
+    background: transparent !important;
+}
+
+#header .header-icons .header-login-btn:hover,
+#header .header-icons .header-logout-btn:hover {
+    color: #ff3333 !important;
+    text-shadow:
+        0 0 10px rgba(255, 51, 51, 0.8),
+        0 0 20px rgba(255, 51, 51, 0.5);
+}
+
+
+/* Ajuste fino del ícono de login: más chico, centrado y con el contenedor redondo forzado */
+#header .header-icons .header-user-icon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain; /* Cambiado a contain para que no se deforme ni desborde */
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+/* Efecto neón rojo alrededor del ícono cuando pasas el mouse por el botón */
+#header .header-icons .header-login-btn:hover .header-user-icon,
+#header .header-icons .header-logout-btn:hover .header-user-icon {
+    border-color: rgba(255, 51, 51, 0.8);
+    box-shadow: 0 0 10px rgba(255, 51, 51, 0.8), 0 0 20px rgba(255, 51, 51, 0.4);
+}
+
+.site-index{
+    padding-top: 35px; /* Ajusta este valor según la altura de tu header */
+}
