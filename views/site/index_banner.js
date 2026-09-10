@@ -66,8 +66,8 @@ var canvasLightning = function (c, cw, ch) {
 
       this.ctx.strokeStyle = "#ff0033"; // Rojo brillante
       this.ctx.fillStyle = "#ff0033";
-      this.ctx.shadowColor = "#ff0000"; // Color del neón
-      this.ctx.shadowBlur = 15; // Intensidad del resplandor (podes subirlo a 20 o 25 si querés más brillo)
+      this.ctx.shadowColor = "#ffffff"; // Color del neón
+      this.ctx.shadowBlur = 25; // Intensidad del resplandor (podes subirlo a 20 o 25 si querés más brillo)
       this.ctx.lineWidth = 1;
 
       if (this.rand(0, 30) == 0) {
@@ -120,7 +120,7 @@ var canvasLightning = function (c, cw, ch) {
     this.lightTimeCurrent++;
     if (this.lightTimeCurrent >= this.lightTimeTotal) {
       var newX = this.rand(100, cw - 100);
-      var newY = this.rand(0, ch / 2);
+      var newY = 0;
       var createCount = this.rand(1, 3);
       while (createCount--) {
         this.createL(newX, newY, true);

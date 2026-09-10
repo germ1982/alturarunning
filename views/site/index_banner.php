@@ -10,7 +10,7 @@ use yii\helpers\Html;
 <div class="diagonal-split-banner position-relative overflow-hidden">
     <canvas id="Rayos" class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 2; pointer-events: none;"></canvas>
     
-    <div id="bannerCarousel" class="carousel slide carousel-fade h-100 position-relative" data-bs-ride="carousel" data-bs-interval="10000" style="z-index: 1;">
+    <div id="bannerCarousel" class="carousel slide carousel-fade h-100 position-relative" data-bs-ride="carousel" data-bs-interval="5000" style="z-index: 1;">
         <div class="carousel-inner h-100">
             <div class="carousel-item active h-100">
                 <?= Html::img('@web/images/sistema/carrusel_banner/imagen1.jpg', [

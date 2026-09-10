@@ -1,19 +1,36 @@
+/* ==========================================================================
+   Estilos del Banner Diagonal - Altura Running
+   ========================================================================== */
+
 /* Contenedor principal del banner */
 .diagonal-split-banner {
-    position: relative;             /* Permite posicionar elementos hijos de forma absoluta dentro */
-    width: 100%;                    /* Ocupa todo el ancho disponible */
-    height: 380px;                  /* Altura fija para el banner */
-    background: rgb(35 35 35 / 0%); /* Fondo totalmente transparente */
-    backdrop-filter: blur(2px);     /* Efecto de desenfoque (glassmorphism) en lo que esté detrás */
-    -webkit-backdrop-filter: blur(10px); /* Soporte de desenfoque para navegadores WebKit (Safari/Chrome) */
-    border: 1px solid rgba(255, 255, 255, 0.08); /* Borde sutil semi-transparente */
-    border-radius: 15px;            /* Bordes redondeados de la caja */
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Sombra difusa exterior para profundidad */
-    overflow: hidden;               /* Oculta cualquier contenido que sobresalga de los bordes redondeados */
-    margin-bottom: 1.5rem;          /* Margen inferior de separación */
+    position: relative;
+    width: 100%;
+    height: 380px;
+    background: rgb(35 35 35 / 0%);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    animation: redLightning 7s infinite ease-in-out;
 }
 
-/* Ajustes estructurales para que el carrusel de Bootstrap llene todo el espacio */
+/* Animación de pulso/relámpago rojo en el borde del contenedor */
+@keyframes redLightning {
+    0%, 100% { 
+        border-color: rgba(255, 51, 51, 0.2);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 10px rgba(255, 51, 51, 0.2); 
+    }
+    50% { 
+        border-color: rgba(219, 43, 43, 0.9);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 25px rgba(255, 51, 51, 0.8), inset 0 0 15px rgba(255, 51, 51, 0.3); 
+    }
+}
+
+/* Ajustes estructurales para el carrusel */
 .diagonal-split-banner .carousel,
 .diagonal-split-banner .carousel-inner,
 .diagonal-split-banner .carousel-item {
@@ -22,52 +39,17 @@
     border-radius: 5px;
 }
 
-/* Forzar que las imágenes cubran exactamente el tamaño del banner */
+/* Forzar que las imágenes cubran exactamente el tamaño del banner y mantengan el zoom suave */
 .diagonal-split-banner .carousel-item img {
     width: 100%;
     height: 380px;
-    object-fit: cover; /* Evita que la imagen se deforme recortando los excedentes proporcionalmente */
-    object-position: center 20%; /
-}
-
-/* Animación de pulso/relámpago rojo en el borde del contenedor */
-@keyframes redLightning {
-    0%, 100% { 
-        border-color: rgba(255, 51, 51, 0.2); /* Borde rojo opaco al inicio y fin */
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 10px rgba(255, 51, 51, 0.2); 
-    }
-    50% { 
-        border-color: rgba(255, 51, 51, 0.9); /* Rojo vivo a mitad de la animación */
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 25px rgba(255, 51, 51, 0.8), inset 0 0 15px rgba(255, 51, 51, 0.3); /* Resplandor exterior e interior fuerte (efecto neón) */
-    }
-}
-
-/* Aplica la animación anterior de forma infinita (cada 7 segundos) */
-.diagonal-split-banner {
-    animation: redLightning 7s infinite ease-in-out;
-}
-
-/* Efecto de zoom cinemático inicial en las fotos del carrusel */
-.diagonal-split-banner .carousel-item img {
+    object-fit: cover;
+    object-position: center 20%;
     transform: scale(1);
-    transition: transform 10s ease-in-out; /* Transición suave de 4 segundos */
+    transition: transform 6s ease-in-out;
 }
 
-/* Cuando la foto está activa, se acerca sutilmente (zoom in) */
+/* Efecto de zoom activo en la imagen del carrusel */
 .diagonal-split-banner .carousel-item.active img {
-    transform: scale(1.05); /* Zoom in a 80% del tamaño original */
-}
-
-/* Reemplazá las reglas de transform/transition anteriores por esto: */
-@keyframes zoomCinematic {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(1.05); /* Zoom in a 108% del tamaño original */
-    }
-}
-
-.diagonal-split-banner .carousel-item.active img {
-    animation: zoomCinematic 4s ease-in-out forwards;
+    transform: scale(1.08);
 }
