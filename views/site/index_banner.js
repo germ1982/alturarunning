@@ -1,3 +1,13 @@
+document.addEventListener("DOMContentLoaded", function() {
+        var c = document.getElementById('Rayos');
+        if (c && typeof canvasLightning === 'function') {
+            c.width = c.parentElement.clientWidth;
+            c.height = c.parentElement.clientHeight;
+            var cl = new canvasLightning(c, c.width, c.height);
+            cl.init();
+        }
+    });
+    
 var canvasLightning = function (c, cw, ch) {
   this.init = function () {
     this.loop();

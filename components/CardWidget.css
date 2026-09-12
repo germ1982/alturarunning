@@ -1,0 +1,69 @@
+/* ==========================================================================
+   Card Genérica - Altura Running
+   ========================================================================== */
+
+.card-generica {
+    background: rgba(35, 35, 35, 0.25); /* Transparencia para efecto glass */
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 51, 51, 0.4); /* Borde sutil rojo acorde al tema */
+    border-radius: 15px;
+    box-shadow: 0 0px 20px 0 rgba(255, 51, 51, 0.37);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #cccccc;
+    margin-bottom: 1.5rem;
+}
+
+.card-generica .card-header {
+    /* background: transparent; */
+    border-bottom: transparent;
+    text-align: center;
+
+    font-size: 1.2rem;
+    padding: 5px;
+}
+
+.card-generica .card-body {
+    background: transparent;
+    flex: 1 1 auto;
+    padding: 1.5rem;
+}
+
+.card-generica .card-footer {
+    background: transparent;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    text-align: center;
+}
+
+.table > :not(caption) > * > * {
+    background: transparent;
+    background-color: trsansparent;
+}
+
+
+
+/* Colour tokens — override to re-skin the effect:
+   --ink    main text colour (defaults to currentColor)
+   --ink-2  primary accent   --ink-3  secondary accent */
+:root { --ink: currentColor; --ink-2: #ff3333; --ink-3: #4FF8FF; }
+
+/* 22 Limelight — a spotlight sweeps across otherwise unlit letters */
+.fx-spotlight {
+  font: 600 26px/1.2 "JetBrains Mono", monospace;
+  letter-spacing: .08em;
+  background: radial-gradient(30.5ch 100% at 50% 50%,
+      var(--ink-2) 20%,
+      color-mix(in srgb, var(--ink) 14%,  #cccccc) 75%
+    ) 0 0 / 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+      animation: fx-spotlight 3.4s linear(0.35 3.68%, 0.57 69.85%) infinite alternate;
+}
+@keyframes fx-spotlight {
+  0%   { background-position: 100% 0; }
+  100% { background-position: 0% 0; }
+}

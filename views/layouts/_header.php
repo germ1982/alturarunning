@@ -8,19 +8,35 @@ use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 use yii\helpers\Html;
 
+$g = Yii::$app->user->isGuest;
+
 $items = [
     [
         'label' => 'Home',
         'url' => ['/site/index'],
     ],
     [
-        'label' => 'About',
+        'label' => 'Acerca Nuestro',
         'url' => ['/site/about'],
     ],
-    [
-        'label' => 'Contact',
-        'url' => ['/site/contact'],
+        [
+        'label' => 'Eventos',
+        'url' => ['/site/eventos'],
     ],
+    [
+        'label' => 'Alumnos',
+        'url' => ['/site/alumnos'],
+    ],
+
+    [
+        'label' => 'Administrar',
+        'url' => ['/site/administrar'],
+    ],
+    //habilitar cuando haya contro de usuarios
+     /* $g ? '':[
+            'label' => mb_strtoupper(Yii::$app->user->identity->username),
+            'url' => ['/site/panel_administrar', 'id' => Yii::$app->user->id]
+      ] */
 ];
 
 ?>
@@ -29,7 +45,7 @@ $items = [
         <!-- Logo a la izquierda -->
         <div class="header-brand-container me-3">
             <a href="<?= Yii::$app->homeUrl ?>">
-                <img src="/alturarunning/web/images/sistema/logo.png" alt="Logo" class="header-logo">
+                <img src="<?= \yii\helpers\Url::to('@web/images/sistema/logo.png') ?>" alt="Logo" class="header-logo">
             </a>
         </div>
 
@@ -51,7 +67,7 @@ $items = [
             <div class="header-icons d-flex align-items-center gap-3">
                 <?php if (Yii::$app->user->isGuest): ?>
                     <a href="<?= \yii\helpers\Url::to(['/site/login']) ?>" class="nav-link header-login-btn d-flex align-items-center gap-2 px-3 py-1">
-                        <img src="/alturarunning/web/images/sistema/icon_user.png" alt="Login" class="header-user-icon">
+                        <img src="<?= \yii\helpers\Url::to('@web/images/sistema/icon_user.png') ?>" alt="Login" class="header-user-icon">
                         <span>Login</span>
                     </a>
                 <?php else: ?>

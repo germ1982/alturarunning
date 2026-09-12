@@ -11,22 +11,24 @@
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 51, 51, 0.4); /* Borde sutil rojo acorde al tema */
     border-radius: 15px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    /* box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); */
+    box-shadow: 0 0px 20px 0 rgba(255, 51, 51, 0.37);
     overflow: hidden;
     margin-bottom: 1.5rem;
-    animation: redLightning 7s infinite ease-in-out;
+    /* animation: redLightning 7s infinite ease-in-out; */
 }
 
 /* Animación de pulso/relámpago rojo en el borde del contenedor */
 @keyframes redLightning {
     0%, 100% { 
         border-color: rgba(255, 51, 51, 0.2);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 10px rgba(255, 51, 51, 0.2); 
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 30, 0.37), 0 0 10px rgba(255, 51, 51, 0.2); 
     }
     50% { 
         border-color: rgba(219, 43, 43, 0.9);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 25px rgba(255, 51, 51, 0.8), inset 0 0 15px rgba(255, 51, 51, 0.3); 
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 30, 0.37), 0 0 25px rgba(255, 51, 51, 0.8), inset 0 0 15px rgba(255, 51, 51, 0.3); 
     }
 }
 
@@ -52,4 +54,45 @@
 /* Efecto de zoom activo en la imagen del carrusel */
 .diagonal-split-banner .carousel-item.active img {
     transform: scale(1.08);
+}
+
+/* ==========================================================================
+   Efecto Glitch para las imágenes del Banner
+   ========================================================================== */
+
+.diagonal-split-banner .carousel-item {
+    position: relative;
+}
+
+/* ==========================================================================
+   Ajustes específicos para modo celular (Responsive Mobile)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .diagonal-split-banner {
+        height: 120px !important; /* Reduce la altura a la mitad */
+    }
+
+    .diagonal-split-banner .carousel-item img {
+        height: auto !important;
+        object-fit: contain !important; /* Muestra la foto completa sin recortar los costados */
+        background-color: rgba(0, 0, 0, 0.4); /* Fondo sutil por si queda algún margen lateral */
+    }
+
+    @media (max-width: 768px) {
+    .diagonal-split-banner {
+        height: 120px !important;
+    }
+
+    .diagonal-split-banner .carousel,
+    .diagonal-split-banner .carousel-inner,
+    .diagonal-split-banner .carousel-item {
+        height: 120px !important;
+    }
+
+    .diagonal-split-banner .carousel-item img {
+        height: 120px !important;
+        object-fit: contain !important;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+}
 }

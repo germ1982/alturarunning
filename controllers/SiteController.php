@@ -122,6 +122,8 @@ class SiteController extends Controller
      */
     public function actionContact(): Response|string
     {
+
+    return $this->render('en_construccion');
         $model = new ContactForm();
 
         $contact = $model->load($this->request->post()) && $model->contact(
@@ -151,5 +153,20 @@ class SiteController extends Controller
     public function actionAbout(): string
     {
         return $this->render('about');
+    }
+
+    public function actionEventos(): string
+    {
+        return $this->render('en_construccion');
+    }
+
+        public function actionAlumnos(): string
+    {
+        return $this->render('en_construccion');
+    }
+
+        public function actionAdministrar(): string
+    {
+        return $this->render('en_construccion');
     }
 }

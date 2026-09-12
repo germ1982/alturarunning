@@ -34,3 +34,13 @@ tests/_support/_generated
 
 #vagrant folder
 /.vagrant
+.env
+optimizar_imagenes.php
+
+/assets
+running.zip
+vendor.zip
+/web/images/eventos
+/web/images/personas
+/web/images/sistema/carrusel_banner
+/web/images/sistema/about

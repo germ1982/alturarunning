@@ -2,28 +2,45 @@
 
 /** @var yii\web\View $this */
 
+use app\components\CardWidget;
+use app\models\ConstantesGlobales;
 use yii\helpers\Html;
 
-$this->title = 'About';
-$this->params['breadcrumbs'][] = $this->title;
-$this->params['meta_description'] = 'Learn more about this Yii2-powered application.';
-$this->params['meta_keywords'] = 'yii, yii2, about, php, framework';
+$this->title = 'Acerca de Altura Running';
+
+$parrafos = (new \yii\db\Query())
+    ->select(['ds.dato', 'ds.observacion'])
+    ->from('dato_sistema ds')
+    ->where(['ds.idtipo' => ConstantesGlobales::ABOUT_PARRAFO])
+    ->all();
+
+$htmlContent = '';
+
+foreach ($parrafos as $parrafo) {
+    $htmlContent .= '<h5 class="text-danger fw-bold mb-2">' . Html::encode($parrafo['dato']) . '</h5>
+                    <p class="mb-4">' . Html::encode($parrafo['observacion']) . '</p>';
+}
 ?>
-<div class="site-about d-flex align-items-center justify-content-center text-center">
-    <div class="site-about-content mx-auto">
-        <h1 class="display-6 fw-semibold mb-3">This is the About page.</h1>
-
-        <p class="text-body-secondary mb-4">
-            You may modify the following file to customize its content:
-            <?php if (YII_DEBUG): ?>
-                <code class="d-block mt-2"><?= __FILE__ ?></code>
-            <?php endif; ?>
-        </p>
-
-        <?= Html::a(
-            'Go to Homepage',
-            Yii::$app->homeUrl,
-            ['class' => 'btn btn-outline-primary btn-lg'],
-        ) ?>
+<div class="site-about mt-5">
+    <div class="row g-3 mb-5 justify-content-center">
+        <div class="col-12 col-lg-8">
+            <?= CardWidget::widget([
+                'title' => 'Acerca de Altura Running',
+                'content' => '
+                    <div class="text-center py-3">
+                        <div class="mb-4">
+                            ' . Html::img('@web/images/sistema/about/about.jpg', [
+                                'alt' => 'Altura Running',
+                                'class' => 'img-fluid rounded',
+                                'style' => 'max-height: 250px; object-fit: cover;'
+                            ]) . '
+                        </div>
+                        <div class="text-start text-white px-3" style="font-size: 0.9rem; line-height: 1.6;">
+                            ' . $htmlContent . '
+                        </div>
+                    </div>',
+                'footer' => false,
+            ]) ?>
+        </div>
     </div>
 </div>
