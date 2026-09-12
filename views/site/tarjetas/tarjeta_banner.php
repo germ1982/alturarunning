@@ -11,7 +11,7 @@ $imagenes = (new \yii\db\Query())
 ?>
 
 <style>
-    <?php include __DIR__ . '/index_banner.css'; ?>
+    <?php include __DIR__ . '/tarjeta_banner.css'; ?>
 </style>
 
 <div class="diagonal-split-banner position-relative overflow-hidden">
@@ -34,5 +34,5 @@ $imagenes = (new \yii\db\Query())
 </div>
 
 <script>
-    <?php include __DIR__ . '/index_banner.js'; ?>
+    <?php include __DIR__ . '/tarjeta_banner.js'; ?>
 </script>

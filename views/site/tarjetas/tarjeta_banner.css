@@ -68,29 +68,21 @@
    Ajustes específicos para modo celular (Responsive Mobile)
    ========================================================================== */
 @media (max-width: 768px) {
-    .diagonal-split-banner {
-        height: 120px !important; /* Reduce la altura a la mitad */
-    }
 
-    .diagonal-split-banner .carousel-item img {
-        height: auto !important;
-        object-fit: contain !important; /* Muestra la foto completa sin recortar los costados */
-        background-color: rgba(0, 0, 0, 0.4); /* Fondo sutil por si queda algún margen lateral */
-    }
 
     @media (max-width: 768px) {
     .diagonal-split-banner {
-        height: 120px !important;
+        height: 205px !important;
     }
 
     .diagonal-split-banner .carousel,
     .diagonal-split-banner .carousel-inner,
     .diagonal-split-banner .carousel-item {
-        height: 120px !important;
+        height: 205px !important;
     }
 
     .diagonal-split-banner .carousel-item img {
-        height: 120px !important;
+        height: 205px !important;
         object-fit: contain !important;
         background-color: rgba(0, 0, 0, 0.4);
     }

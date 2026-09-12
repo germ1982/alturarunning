@@ -5,7 +5,7 @@
 use app\components\CardWidget;
 use yii\helpers\Html;
 
-$this->title = 'My Yii Application';
+$this->title = 'Altura Running Team';
 $this->params['meta_description'] = 'A high-performance PHP framework best for developing web applications. Fast, secure, and professional.';
 $this->params['meta_keywords'] = 'yii, yii2, php, framework, web application, high-performance';
 ?>
@@ -14,21 +14,21 @@ $this->params['meta_keywords'] = 'yii, yii2, php, framework, web application, hi
     <!-- Incluimos el banner diagonal partido con transparencia glassmorphism -->
     <div class="row g-3 mb-3">
         <div class="col-12">
-            <?= $this->render('index_banner') ?>
+            <?= $this->render('tarjetas/tarjeta_banner') ?>
         </div>
     </div>
 
     <div class="row g-3 mb-5">
 
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-4 pb-4 pb-md-0">
             <?= $this->render('tarjetas/tarjeta_destacado') ?>
         </div>
 
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-4 pb-4 pb-md-0">
             <?= $this->render('tarjetas/tarjeta_eventos') ?>
         </div>
 
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-4  pb-4 pb-md-0">
             <?= $this->render('tarjetas/tarjeta_dino_motivador') ?>
         </div>
 
