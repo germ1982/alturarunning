@@ -1,0 +1,166 @@
+/* ==========================================================================
+   Botón Neon Opaco - Estructura Definitiva (Círculo Libre + Luz Interna)
+   ========================================================================== */
+
+.btn-neon-pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 51, 51, 0.4);
+    border-radius: 50rem;
+    box-shadow: none;
+    color: #aaaaaa;
+    text-decoration: none;
+    padding: 0.8rem 2rem 0.8rem 3rem; /* Espacio exacto para el círculo grande */
+
+    transition: all 0.3s ease;
+    overflow: visible; /* Clave: el botón no corta nada afuera */
+}
+
+.btn-neon-pill:hover {
+    background: #241a1a;
+    border-color: rgba(255, 51, 51, 1);
+    box-shadow: 0 0px 25px 0 rgba(255, 51, 51, 0.7);
+    animation: none !important;
+    color: #ff3333 !important;
+}
+
+/* Círculo con tamaño real de 60px y el ícono a la vista */
+.btn-neon-icon-wrapper {
+    position: absolute;
+    left: -22px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 51, 51, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff3333;
+    font-size: 1.3rem;
+    box-shadow: none;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.btn-neon-pill:hover .btn-neon-icon-wrapper {
+    background: #241a1a;
+    border-color: rgba(255, 51, 51, 1);
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.5);
+}
+
+/* Contenedor interno exclusivo para la luz que baja (con overflow oculto acá adentro) */
+.btn-neon-glow-container {
+    position: absolute;
+    inset: 0;
+    border-radius: 50rem;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.btn-neon-glow-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 51, 51, 0) 0%,
+        rgba(255, 51, 51, 0.4) 50%,
+        rgba(255, 51, 51, 0) 100%
+    );
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.btn-neon-pill:hover .btn-neon-glow-container::after {
+    opacity: 1;
+    animation: neon-rain 1s linear infinite;
+}
+
+@keyframes neon-rain {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+/* Texto con prioridad visual */
+.btn-neon-text {
+    position: relative;
+    z-index: 2;
+    font:
+        600 16px/1.2 "JetBrains Mono",
+        monospace;
+    letter-spacing: 0.06em;
+    background: radial-gradient(
+            30.5ch 100% at 50% 50%,
+            var(--ink-2) 20%,
+            color-mix(in srgb, var(--ink) 14%, #cccccc) 75%
+        )
+        0 0 / 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: fx-spotlight 3.4s linear(0.35 3.68%, 0.57 69.85%) infinite
+        alternate;
+}
+
+:root {
+    --ink: currentColor;
+    --ink-2: #ff3333;
+    --ink-3: #4ff8ff;
+}
+
+@keyframes fx-spotlight {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: 0% 0;
+    }
+}
+
+.btn-neon-text:hover {
+    animation: none;
+    color: #ff3333 !important;
+}
+
+.btn-neon-icon-wrapper .fa-spin {
+    animation-play-state: paused;
+}
+
+.btn-neon-pill:hover .btn-neon-icon-wrapper .fa-spin {
+    animation-play-state: running;
+}
+
+.btn-neon-pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 254px; /* Ancho fijo para que todos midan exactamente igual */
+    /* ... lo demás que ya tenías ... */
+}
+
+.btn-neon-icon-wrapper [class*="fa-"] {
+    animation-play-state: paused;
+}
+
+.btn-neon-pill:hover .btn-neon-icon-wrapper [class*="fa-"] {
+    animation-play-state: running;
+}
+
+@media (max-width: 576px) {
+    .btn-neon-pill {
+        width: 100% !important;
+        width: 254px;
+        max-width: 290px;
+        min-width: 235px;
+    }
+}

@@ -123,7 +123,7 @@ class SiteController extends Controller
     public function actionContact(): Response|string
     {
 
-    return $this->render('en_construccion');
+        return $this->render('en_construccion');
         $model = new ContactForm();
 
         $contact = $model->load($this->request->post()) && $model->contact(
@@ -160,12 +160,36 @@ class SiteController extends Controller
         return $this->render('en_construccion');
     }
 
-        public function actionAlumnos(): string
+    public function actionAlumnos(): string
     {
         return $this->render('en_construccion');
     }
 
-        public function actionAdministrar(): string
+    public function actionAdministrar(): string
+    {
+        return $this->render('panel_control');
+    }
+
+    public function actionGestionar_alumnos(): string
+    {
+        return $this->render('en_construccion');
+    }
+
+    public function actionGestionar_eventos(): string
+    {
+        return $this->render('en_construccion');
+    }
+    public function actionGestionar_contenidos(): string
+    {
+        return $this->render('en_construccion');
+    }
+
+        public function actionGestionar_usuarios(): string
+    {
+        return $this->render('en_construccion');
+    }
+
+        public function actionGestionar_profesores(): string
     {
         return $this->render('en_construccion');
     }
