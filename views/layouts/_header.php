@@ -19,7 +19,7 @@ $items = [
         'label' => 'Acerca Nuestro',
         'url' => ['/site/about'],
     ],
-        [
+    [
         'label' => 'Eventos',
         'url' => ['/site/eventos'],
     ],
@@ -28,15 +28,14 @@ $items = [
         'url' => ['/site/alumnos'],
     ],
 
-    [
+
+    $g ? '' : [
         'label' => 'Administrar',
-        'url' => ['/site/administrar'],
+        'url' => ['/site/panel_administrar', 'id' => Yii::$app->user->id]
     ],
-    //habilitar cuando haya contro de usuarios
-     /* $g ? '':[
-            'label' => mb_strtoupper(Yii::$app->user->identity->username),
-            'url' => ['/site/panel_administrar', 'id' => Yii::$app->user->id]
-      ] */
+
+
+
 ];
 
 ?>
@@ -66,19 +65,10 @@ $items = [
 
             <!-- Botones de la derecha -->
             <div class="header-icons d-flex align-items-center gap-3">
-                <?php if (Yii::$app->user->isGuest): ?>
-                    <a href="<?= \yii\helpers\Url::to(['/site/login']) ?>" class="nav-link header-login-btn d-flex align-items-center gap-2 px-3 py-1">
-                        <span>Ingresar</span>
-                    </a>
+                <?php if (\Yii::$app->user->isGuest): ?>
+                    <a href="<?= \yii\helpers\Url::to(['/site/login']) ?>">INGRESAR</a>
                 <?php else: ?>
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="text-light small opacity-75">
-                            <?= Html::encode(Yii::$app->user->identity?->username ?? '') ?>
-                        </span>
-                        <?= Html::beginForm(['/site/logout'], 'post', ['class' => 'd-inline'])
-                            . Html::submitButton('Logout', ['class' => 'nav-link logout header-logout-btn border-0 bg-transparent p-0'])
-                            . Html::endForm() ?>
-                    </div>
+                    <a href="<?= \yii\helpers\Url::to(['/site/logout']) ?>" data-method="post">SALIR</a>
                 <?php endif; ?>
             </div>
 
