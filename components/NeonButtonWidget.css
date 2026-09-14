@@ -110,6 +110,7 @@
     color: transparent;
     animation: fx-spotlight 3.4s linear(0.35 3.68%, 0.57 69.85%) infinite
         alternate;
+        padding-left: 40px;
 }
 
 :root {
