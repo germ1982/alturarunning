@@ -156,6 +156,10 @@
 .btn-neon-pill:hover .btn-neon-icon-wrapper [class*="fa-"] {
     animation-play-state: running;
 }
+.my-2 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
 
 @media (max-width: 576px) {
     .btn-neon-pill {

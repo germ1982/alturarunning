@@ -4,22 +4,25 @@
 /** @var app\models\SistemaLogSearch $searchModel */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 return [
 
       'username',
-      'email:email',
+      [
+            'attribute' => 'email',
+            'value' => 'persona.email',
+      ],
       [
             'attribute' => 'telefono',
             'format' => 'raw',
             'value' => function ($model) {
-                  if (empty($model->telefono)) return '<span class="text-muted">No cargado</span>';
+                  $telefono = $model->persona->telefono ?? null;
+                  if (empty($telefono)) return '<span class="text-muted">No cargado</span>';
 
-                  return Html::button('<i class="bi bi-telephone-outbound me-1"></i>' . $model->telefono, [
-                        'value' => \yii\helpers\Url::to(['user/contacto-modal', 'id' => $model->id]),
-                        'class' => 'showModalButton btn btn-link text-success p-0 text-decoration-none fw-bold',
+                  return Html::a('<i class="bi bi-telephone-outbound me-1"></i>' . $telefono, Url::to(['user/contacto', 'id' => $model->id]), [
+                        'class' => 'text-success p-0 text-decoration-none fw-bold',
                         'title' => 'Opciones de contacto',
-                        'data-title' => 'Contactar a ' . $model->username,
                   ]);
             },
       ],
@@ -38,30 +41,26 @@ return [
                   \app\models\User::STATUS_ACTIVE => 'Activo',
                   \app\models\User::STATUS_DELETED => 'Inactivo',
             ], [
-                  'class' => 'form-select', // <--- ESTA ES LA CLAVE PARA LA FLECHITA
+                  'class' => 'form-select',
                   'prompt' => 'Todos',
             ]),
       ],
       [
             'class' => 'yii\grid\ActionColumn',
             'header' => 'Acciones',
-            'headerOptions' => ['class' => 'text-primary text-center', 'style' => 'width:120px'],
+            'headerOptions' => ['class' => 'text-primary text-center', 'style' => 'width:150px'],
             'contentOptions' => ['class' => 'text-center'],
             'template' => '{view} {update} {roles} {toggle} {password}',
             'buttons' => [
                   'view' => function ($url, $model) {
-                        return Html::button('<i class="bi bi-eye"></i>', [
-                              'value' => $url,
-                              'class' => 'action-btn-custom showModalButton',
-                              'data-title' => 'Detalle de Usuario ' . $model->username, // <-- El JS leerá esto
+                        return Html::a('<i class="bi bi-eye"></i>', ['view', 'id' => $model->id], [
+                              'class' => 'action-btn-custom',
                               'title' => 'Detalle de Usuario ' . $model->username
                         ]);
                   },
                   'update' => function ($url, $model) {
-                        return Html::button('<i class="bi bi-pencil"></i>', [
-                              'value' => $url,
-                              'class' => 'action-btn-custom showModalButton',
-                              'data-title' => 'Editar Usuario ' . $model->username, // <-- El JS leerá esto
+                        return Html::a('<i class="bi bi-pencil"></i>', ['update', 'id' => $model->id], [
+                              'class' => 'action-btn-custom',
                               'title' => 'Editar Usuario ' . $model->username
                         ]);
                   },
@@ -71,40 +70,28 @@ return [
                         $title = $esActivo ? 'Desactivar' : 'Activar';
                         $action = $esActivo ? 'desactivar' : 'activar';
 
-                        return Html::button('<i class="bi ' . $icon . '"></i>', [
-                              'value' => \yii\helpers\Url::to(['user/' . $action, 'id' => $model->id]),
-                              'class' => 'action-btn-custom showModalButton', // Usamos tu clase de modal
+                        // Requiere POST por seguridad, usamos enlace con data-method post y confirmación
+                        return Html::a('<i class="bi ' . $icon . '"></i>', [$action, 'id' => $model->id], [
+                              'class' => 'action-btn-custom',
                               'title' => $title,
-                              'data-title' => $title . ' Usuario: ' . $model->username,
-
+                              'data-method' => 'post',
+                              'data-confirm' => '¿Estás seguro que querés ' . strtolower($title) . ' a ' . $model->username . '?',
                         ]);
                   },
 
-
-                  /* 'delete' => function ($url, $model) {
-                        return Html::a('<i class="bi bi-trash"></i>', $url, [
-                              'class' => 'action-btn-custom showModalButton',
-                              'data-confirm' => '¿Eliminar registro?',
-                              'data-method' => 'post',
-                              'data-title' => 'Eliminar Usuario ' . $model->username // <-- El JS leerá esto
-                        ]);
-                  }, */
-
                   'roles' => function ($url, $model, $key) {
-                        return Html::button('<i class="bi bi-list"></i>', [
-                              'value' => \yii\helpers\Url::to(['user/roles', 'id' => $key]),
-                              'class' => 'action-btn-custom showModalButton',
-                              'data-title' => 'Gestionar Roles de ' . $model->username, // <-- El JS leerá esto
+                        return Html::a('<i class="bi bi-list"></i>', ['roles', 'id' => $key], [
+                              'class' => 'action-btn-custom',
                               'title' => 'Gestionar Roles de ' . $model->username
                         ]);
                   },
 
                   'password' => function ($url, $model) {
-                        return Html::button('<i class="bi bi-lock"></i>', [
-                              'value' => \yii\helpers\Url::to(['user/reset-password', 'id' => $model->id]),
-                              'class' => 'action-btn-custom showModalButton',
+                        return Html::a('<i class="bi bi-lock"></i>', ['reset-password', 'id' => $model->id], [
+                              'class' => 'action-btn-custom',
                               'title' => 'Resetear contraseña',
-                              'data-title' => 'Resetear contraseña de ' . $model->username,
+                              'data-method' => 'post',
+                              'data-confirm' => '¿Estás seguro que querés resetear la contraseña de ' . $model->username . ' a 123456?',
                         ]);
                   },
 

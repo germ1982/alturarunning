@@ -30,6 +30,9 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE  = 10;
 
+    public $email;
+    public $telefono;
+
     public static function tableName()
     {
         return 'user';
@@ -114,9 +117,14 @@ class User extends ActiveRecord implements IdentityInterface
     // ---------------------------------------------------------
     //  BEFORE SAVE — Manejo automático de seguridad
     // ---------------------------------------------------------
-public function beforeSave($insert)
+    public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
+            if ($this->persona) {
+                $this->persona->email = $this->email;
+                $this->persona->telefono = $this->telefono;
+                $this->persona->save(false);
+            }
             return true;
         }
         return false;
@@ -138,5 +146,15 @@ public function beforeSave($insert)
         return $this->getRoles()
             ->andWhere(['nombre' => $nombreRol, 'activo' => 1])
             ->exists();
+    }
+
+    // Al cargar el modelo, poblamos las propiedades virtuales desde la relación persona
+    public function afterFind()
+    {
+        parent::afterFind();
+        if ($this->persona) {
+            $this->email = $this->persona->email;
+            $this->telefono = $this->persona->telefono;
+        }
     }
 }

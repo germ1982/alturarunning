@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(['id' => 'form-usuario']); ?>
 
-    <div id="mis-datos">
+        <div  id="mis-datos" class="neon-container mt-5">
 
         <?= $form->field($model, 'id')->hiddenInput(['id' => 'input_iduser'])->label(false) ?>
 
@@ -29,7 +29,7 @@ use yii\widgets\ActiveForm;
         <div class="d-flex justify-content-center">
 
             <?= Html::a('Cambiar Contraseña', '#', [
-                'onclick' => "$('#mis-datos').hide(); $('#new-password').show(); $('.modal-footer').hide(); return false;"
+                'onclick' => "$('#mis-datos').hide(); $('#new-password').show(); return false;"
             ]) ?>
         </div>
         <br>
@@ -67,7 +67,7 @@ use yii\widgets\ActiveForm;
 
             <?= Html::button('Cancelar', [
                 'class' => 'btn-donate',
-                'onclick' => "$('#new-password').hide(); $('#mis-datos').show(); $('.modal-footer').show();"
+                'onclick' => "$('#new-password').hide(); $('#mis-datos').show();"
             ]) ?>
         </div>
 
