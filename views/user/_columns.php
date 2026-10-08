@@ -6,16 +6,28 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+$columna_01 = '20%';
+$columna_02 = '30%';
+$columna_03 = '10%';
+$columna_04 = '10%';
+$columna_05 = '10%';
+
+
 return [
 
-      'username',
+      [
+            'attribute' => 'username',
+            'contentOptions' => ['style' => 'width: ' . $columna_01 . ';'],
+      ],
       [
             'attribute' => 'email',
             'value' => 'persona.email',
+            'contentOptions' => ['style' => 'width: ' . $columna_02 . ';'],
       ],
       [
             'attribute' => 'telefono',
             'format' => 'raw',
+            'contentOptions' => ['style' => 'width: ' . $columna_03 . ';'],
             'value' => function ($model) {
                   $telefono = $model->persona->telefono ?? null;
                   if (empty($telefono)) return '<span class="text-muted">No cargado</span>';
@@ -30,6 +42,7 @@ return [
       [
             'attribute' => 'status',
             'label' => 'Estado',
+            'contentOptions' => ['style' => 'width: ' . $columna_04 . ';'],
             'format' => 'raw',
             'value' => function ($model) {
                   if ($model->status === \app\models\User::STATUS_ACTIVE) {
@@ -48,6 +61,7 @@ return [
       [
             'class' => 'yii\grid\ActionColumn',
             'header' => 'Acciones',
+            'contentOptions' => ['style' => 'width: ' . $columna_05 . ';'],
             'headerOptions' => ['class' => 'text-primary text-center', 'style' => 'width:150px'],
             'contentOptions' => ['class' => 'text-center'],
             'template' => '{view} {update} {roles} {toggle} {password}',
