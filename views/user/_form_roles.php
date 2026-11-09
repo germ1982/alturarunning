@@ -14,13 +14,13 @@ $roles = User_rol::find()
 ?>
 
 <div id="form_principal">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <h5 class="mb-0">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div class="neon-title-container">
             Roles de <?= Html::encode($user->username) ?>
-        </h5>
+        </div>
 
         <button type="button"
-            class="btn-plus"
+            class="btn btn-outline-light btn-sm"
             title="Crear rol"
             onclick="mostrar_alta_rol()">
             <i class="bi bi-plus-lg"></i> <span>Crear Rol</span>
@@ -29,12 +29,11 @@ $roles = User_rol::find()
 
 
     <?php $form = ActiveForm::begin([
-        'id' => 'roles-form', // <--- AGREGAR ESTE ID
-        'options' => ['data-pjax' => true] 
+        'id' => 'roles-form',
     ]); ?>
 
 <div class="table-responsive">
-    <table id="tabla_roles" class="table table-bordered table-hover table-sm">
+    <table id="tabla_roles" class="table table-stark align-middle mb-0">
         <thead class="thead-light">
             <tr>
                 <th style="width:60px">ID</th>
@@ -61,6 +60,10 @@ $roles = User_rol::find()
         </tbody>
     </table>
 </div>
+    <div class="d-flex justify-content-center gap-3 mt-3">
+        <?= Html::submitButton('Guardar', ['class' => 'btn btn-outline-light btn-sm']) ?>
+        <?= Html::a('Volver', ['index'], ['class' => 'btn btn-outline-light btn-sm']) ?>
+    </div>
     <?php ActiveForm::end(); ?>
 </div>
 
@@ -89,8 +92,8 @@ $roles = User_rol::find()
     </div>
     <!-- Botones -->
     <div class="mt-3 text-end">
-        <button type="button" class="btn btn-secondary" onclick="mostrar_form_principal()">Cerrar</button>
-        <button type="button" class="btn btn-secondary" onclick="guardar_rol()">Guardar</button>
+        <button type="button" class="btn btn-outline-light btn-sm" onclick="mostrar_form_principal()">Cerrar</button>
+        <button type="button" class="btn btn-outline-light btn-sm" onclick="guardar_rol()">Guardar</button>
     </div>
 </div>
 

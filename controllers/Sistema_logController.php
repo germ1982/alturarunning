@@ -2,15 +2,39 @@
 
 namespace app\controllers;
 
+use app\helpers\UserHelper;
 use app\models\SistemaLog;
 use app\models\SistemaLogSearch;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 class Sistema_logController  extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'matchCallback' => static fn () => UserHelper::esAdmin(),
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex_old()
     {
         $query = SistemaLog::find()

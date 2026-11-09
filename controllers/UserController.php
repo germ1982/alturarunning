@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\helpers\UserHelper;
 use app\models\SistemaLog;
 use app\models\User;
 use app\models\User_usuario_rol;
@@ -39,7 +40,10 @@ class UserController extends Controller
                                 if (Yii::$app->user->isGuest) return false;
 
                                 $userLogueado = \app\models\User::findOne(Yii::$app->user->id);
-                                $idAEditar = Yii::$app->request->post('iduser') ?: Yii::$app->request->get('id');
+                                // Cada acción valida el mismo id que después usa para editar.
+                                $idAEditar = $action->id === 'change_password'
+                                    ? Yii::$app->request->post('iduser')
+                                    : Yii::$app->request->get('id');
 
                                 return $userLogueado->tieneRol('Administrador') || (Yii::$app->user->id == $idAEditar);
                             },
@@ -61,6 +65,7 @@ class UserController extends Controller
                         'desactivar' => ['POST'],
                         'activar' => ['POST'],
                         'reset-password' => ['POST'],
+                        'change_password' => ['POST'],
                     ],
                 ],
             ]
@@ -132,7 +137,9 @@ class UserController extends Controller
                     $model->id,
                     "Se Edito el usuario $model->username"
                 );
-                return $this->redirect(['index']);
+                Yii::$app->session->setFlash('success', 'Los datos se guardaron correctamente.');
+
+                return $this->redirect(UserHelper::esAdmin() ? ['index'] : ['site/panel_administrar']);
             }
         }
 
@@ -183,9 +190,13 @@ class UserController extends Controller
             }
         }
 
+        if (mb_strlen((string) $pNueva) < 6) {
+            return ['success' => false, 'message' => 'La nueva contraseña debe tener al menos 6 caracteres.'];
+        }
+
         $user->setPassword($pNueva);
 
-        if ($user->save()) {
+        if ($user->save(false)) {
             SistemaLog::registrar(
                 SistemaLog::MODULO_USUARIOS,
                 SistemaLog::ACCION_UPDATE,
@@ -322,13 +333,18 @@ class UserController extends Controller
     public function actionResetPassword($id)
     {
         $model = $this->findModel($id);
-        $model->setPassword('123456');
+        $temporal = substr(str_replace(['-', '_'], '', Yii::$app->security->generateRandomString(16)), 0, 8);
+        $model->setPassword($temporal);
         if ($model->save(false)) {
             SistemaLog::registrar(
                 SistemaLog::MODULO_USUARIOS,
                 SistemaLog::ACCION_UPDATE,
                 $model->id,
                 "Se Reseteo Contraseña del usuario " . $model->username,
+            );
+            Yii::$app->session->setFlash(
+                'success',
+                'Contraseña temporal de ' . Html::encode($model->username) . ': <strong>' . $temporal . '</strong>. Pasásela al usuario; no se vuelve a mostrar.'
             );
         }
         return $this->redirect(['index']);

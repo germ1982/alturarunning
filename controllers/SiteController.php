@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use Yii;
+use app\helpers\UserHelper;
 use app\models\ContactForm;
 use app\models\LoginForm;
 use app\models\SistemaLog;
@@ -38,21 +39,45 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout'],
+                'only' => [
+                    'logout',
+                    'panel_administrar',
+                    'registrar_log_ajax',
+                    'gestionar_usuarios',
+                    'gestionar_contenidos',
+                    'gestionar_eventos',
+                    'gestionar_alumnos',
+                    'gestionar_profesores',
+                ],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'panel_administrar', 'registrar_log_ajax'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+                    $this->reglaPermiso('gestionar_usuarios', 'usuarios'),
+                    $this->reglaPermiso('gestionar_contenidos', 'contenidos'),
+                    $this->reglaPermiso('gestionar_eventos', 'eventos'),
+                    $this->reglaPermiso('gestionar_alumnos', 'alumnos'),
+                    $this->reglaPermiso('gestionar_profesores', 'profesores'),
                 ],
             ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
+                    'registrar_log_ajax' => ['post'],
                 ],
             ],
+        ];
+    }
+
+    private function reglaPermiso(string $accion, string $permiso): array
+    {
+        return [
+            'actions' => [$accion],
+            'allow' => true,
+            'matchCallback' => static fn () => UserHelper::puede($permiso),
         ];
     }
 

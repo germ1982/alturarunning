@@ -2,9 +2,11 @@
 
 namespace app\controllers;
 
+use app\helpers\UserHelper;
 use app\models\User_rol;
 use app\models\User_rolSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,10 +24,20 @@ class User_rolController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'matchCallback' => static fn () => UserHelper::esAdmin(),
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'guardar_rol' => ['POST'],
                     ],
                 ],
             ]

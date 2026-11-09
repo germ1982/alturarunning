@@ -35,19 +35,20 @@ $this->params['meta_keywords'] = 'yii, yii2, php, framework, web application, hi
     </div>
 
     <div class="row g-3 ">
-        <div class="col-lg-3 col-md-1 d-none d-lg-block">
+        <div class="col-lg-3 d-none d-lg-block">
             <?= Html::img('@web/images/sistema/dinofcaminando1.png', [
                 'alt' => 'Entrenamiento',
-                'style' => 'max-width: 326px; height: auto; object-fit: cover; text-align: left;'
+                'class' => 'img-fluid',
             ]) ?>
         </div>
-        <div class="col-lg-6 col-md-1 col-12">
+        <div class="col-lg-6 col-12">
             <?= $this->render('tarjetas/tarjeta_calendario') ?>
         </div>
-        <div class="col-lg-3 col-md-1 d-none d-lg-block">
+        <div class="col-lg-3 d-none d-lg-block">
             <?= Html::img('@web/images/sistema/dinomcorriendo2.png', [
                 'alt' => 'Entrenamiento',
-                'style' => 'max-width: 400px; height: auto; object-fit: cover; padding-top: 10px;'
+                'class' => 'img-fluid',
+                'style' => 'padding-top: 10px;'
             ]) ?>
         </div>
 

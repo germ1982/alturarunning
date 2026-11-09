@@ -185,3 +185,94 @@ body {
 .site-index{
     padding-top: 35px; /* Ajusta este valor según la altura de tu header */
 }
+
+/* Header en celular: tarjeta neón con el logo arriba y el menú en texto debajo */
+@media (max-width: 767.98px) {
+    #header {
+        position: relative;
+        background: none;
+        border-bottom: 0;
+        padding: 12px 0 0;
+        margin-bottom: 0;
+    }
+
+    #header .header-wrapper {
+        flex-direction: column;
+        align-items: center !important;
+        gap: 8px;
+        width: calc(100% - 32px);
+        margin: 0 auto;
+        padding: 12px 8px;
+        background: rgb(16 16 16 / 65%);
+        border: 1px solid rgba(255, 51, 51, 0.6);
+        border-radius: 15px;
+        box-shadow: 0 0 20px 0 rgba(255, 51, 51, 0.37);
+    }
+
+    /* Línea neón entre el logo y el menú */
+    #header .header-glass-bar::before {
+        content: "";
+        display: block;
+        height: 1px;
+        margin-bottom: 8px;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 51, 51, 0.9) 25%,
+            rgba(255, 51, 51, 0.9) 75%,
+            transparent 100%
+        );
+        filter: drop-shadow(0 0 4px rgba(255, 51, 51, 0.9));
+    }
+
+    #header .header-brand-container {
+        margin-right: 0 !important;
+    }
+
+    #header .header-logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    #header .header-glass-bar {
+        width: 100%;
+        flex-grow: 0;
+        background: none;
+        border: 0;
+        box-shadow: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    #header .navbar-collapse {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* Los enlaces del menú y Ingresar/Salir fluyen juntos y centrados */
+    #header .navbar-nav,
+    #header .header-icons {
+        display: contents;
+    }
+
+    #header .navbar-nav .nav-link,
+    #header .header-icons a {
+        color: #ff3333 !important;
+        text-shadow:
+            0 0 8px rgba(255, 51, 51, 0.8),
+            0 0 16px rgba(255, 51, 51, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 0.85rem;
+        padding: 0.25rem 0.5rem !important;
+    }
+
+    /* El header ya no es fijo: el contenido no necesita reservarle lugar */
+    main > .container {
+        padding-top: 16px;
+    }
+
+    .site-index {
+        padding-top: 0;
+    }
+}

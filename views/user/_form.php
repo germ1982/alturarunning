@@ -1,22 +1,25 @@
 <?php
 
+use app\helpers\UserHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
-/** @var yii\web\View $model */
+/** @var yii\web\View $this */
+/** @var app\models\User $model */
 
-//$userid = Yii::$app->user->identity->id;
-//$idrol_admin = User_rol::find()->where(['nombre' => 'Administrador'])->one()->idrol;
-//$rol = User_usuario_rol::find()->where(['idusuario' => $userid,'idrol' => $idrol_admin])->one();
-\yii\widgets\PjaxAsset::register($this);
+// Un administrador puede cambiar la contraseña de otro sin conocer la actual.
+$pideActual = !UserHelper::esAdmin() || $model->id == Yii::$app->user->id;
 ?>
 
 <div class="user-form">
 
     <?php $form = ActiveForm::begin(['id' => 'form-usuario']); ?>
 
-        <div  id="mis-datos" class="neon-container mt-5">
+    <div id="mis-datos" class="neon-container mt-5">
+
+        <div class="neon-title-container pb-3"><?= Html::encode($this->title) ?></div>
 
         <?= $form->field($model, 'id')->hiddenInput(['id' => 'input_iduser'])->label(false) ?>
 
@@ -26,81 +29,82 @@ use yii\widgets\ActiveForm;
 
         <?= $form->field($model, 'telefono')->textInput(['maxlength' => true]) ?>
 
-        <div class="d-flex justify-content-center">
-
+        <div class="d-flex justify-content-center mb-3">
             <?= Html::a('Cambiar Contraseña', '#', [
                 'onclick' => "$('#mis-datos').hide(); $('#new-password').show(); return false;"
             ]) ?>
         </div>
-        <br>
-        <!-- <div class="d-flex justify-content-center">
-                  <?php //Html::submitButton('Guardar', ['class' => 'btn-donate']) 
-                    ?>
-            </div> -->
 
-
-
-
+        <div class="d-flex justify-content-center">
+            <?= Html::submitButton('Guardar', ['class' => 'btn btn-outline-light btn-sm']) ?>
+        </div>
     </div>
 
-    <div id='new-password' style="display:none">
-        <div class="modal-title" style="margin-top: -15px; margin-bottom: -10px;">Cambiar Contraseñaaaaa</div>
-        <hr>
+    <div id="new-password" class="neon-container mt-5" style="display:none">
+        <div class="neon-title-container pb-3">Cambiar Contraseña</div>
+
+        <?php if ($pideActual): ?>
+            <div class="mb-3">
+                <label class="control-label" for="pass_actual">Contraseña Actual</label>
+                <?= Html::passwordInput('pass_actual', '', ['class' => 'form-control', 'id' => 'pass_actual', 'autocomplete' => 'current-password']) ?>
+            </div>
+        <?php endif; ?>
 
         <div class="mb-3">
-            <label class="control-label">Contraseña Actual</label>
-            <?= Html::passwordInput('pass_actual', '', ['class' => 'form-control', 'id' => 'pass_actual', 'autocomplete' => 'new-password']) ?>
-        </div>
-
-        <div class="mb-3">
-            <label class="control-label">Nueva Contraseña</label>
+            <label class="control-label" for="pass_nueva">Nueva Contraseña</label>
             <?= Html::passwordInput('pass_nueva', '', ['class' => 'form-control', 'id' => 'pass_nueva', 'autocomplete' => 'new-password']) ?>
         </div>
 
         <div class="mb-3">
-            <label class="control-label">Repetir Nueva Contraseña</label>
+            <label class="control-label" for="pass_repetir">Repetir Nueva Contraseña</label>
             <?= Html::passwordInput('pass_repetir', '', ['class' => 'form-control', 'id' => 'pass_repetir', 'autocomplete' => 'new-password']) ?>
         </div>
-        <br>
-        <div class="div-boton d-flex justify-content-between align-items-center mt-4">
-            <?= Html::button('Confirmar', ['class' => 'btn-donate', 'id' => 'btn-confirmar-pass']) ?>
+
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <?= Html::button('Confirmar', ['class' => 'btn btn-outline-light btn-sm', 'id' => 'btn-confirmar-pass']) ?>
 
             <?= Html::button('Cancelar', [
-                'class' => 'btn-donate',
+                'class' => 'btn btn-outline-light btn-sm',
                 'onclick' => "$('#new-password').hide(); $('#mis-datos').show();"
             ]) ?>
         </div>
 
-        <div id="password-message" style="margin-top: 10px;"></div>
-
+        <div id="password-message" class="mt-3 text-center"></div>
     </div>
 
     <?php ActiveForm::end(); ?>
 
 </div>
 <?php
-$urlCambio = Url::to(['user/change_password']);
-$script = <<< JS
+$urlCambio = Json::htmlEncode(Url::to(['user/change_password']));
+$pideActualJs = Json::htmlEncode($pideActual);
+$script = <<<JS
 
 $('#btn-confirmar-pass').on('click', function() {
-
-    var pActual  = $('#pass_actual').val();
+    var pideActual = $pideActualJs;
+    var pActual  = pideActual ? $('#pass_actual').val() : '';
     var pNueva   = $('#pass_nueva').val();
     var pRepetir = $('#pass_repetir').val();
     var iduser   = $('#input_iduser').val();
+    var aviso    = $('#password-message');
 
-    if (pNueva === '' || pRepetir === '' || pActual === '') {
-        $('#password-message').html('<span class="text-danger">Hay Campos Vacios.</span>');
+    if (pNueva === '' || pRepetir === '' || (pideActual && pActual === '')) {
+        aviso.html('<span class="text-danger">Hay campos vacíos.</span>');
         return;
     }
 
-    if(pNueva !== pRepetir) {
-        $('#password-message').html('<span class="text-danger">Las nuevas contraseñas no coinciden.</span>');
+    if (pNueva.length < 6) {
+        aviso.html('<span class="text-danger">La nueva contraseña debe tener al menos 6 caracteres.</span>');
+        return;
+    }
+
+    if (pNueva !== pRepetir) {
+        aviso.html('<span class="text-danger">Las nuevas contraseñas no coinciden.</span>');
         return;
     }
 
     $.ajax({
-        url: '$urlCambio',
+        url: $urlCambio,
         type: 'POST',
         data: {
             actual: pActual,
@@ -109,48 +113,27 @@ $('#btn-confirmar-pass').on('click', function() {
             [yii.getCsrfParam()]: yii.getCsrfToken()
         },
         success: function(response) {
-            console.log("Log del servidor:", response.log);
-            
-            // 1. PRIMERO evaluamos si el request fue exitoso en general
-            if(response.success) {
-                // 2. DESPUÉS evaluamos si es el propio usuario o un admin cambiando a otro
-                if(response.is_self) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Contraseña actualizada!',
-                        text: 'Tu sesión se cerrará por seguridad.',
-                        timer: 3000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location.href = response.redirect;
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Éxito!',
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        $('#new-password').hide();
-                        $('#mis-datos').show();
-                        $('.modal-footer').show();
-                        $('#pass_actual, #pass_nueva, #pass_repetir').val('');
-                        $('#password-message').html('');
-                    });
-                }
-            } else {
-                // Si response.success es falso (ej. contraseña actual incorrecta)
-                $('#password-message').html('<span class="text-danger">' + response.message + '</span>');
+            if (!response.success) {
+                aviso.html($('<span class="text-danger">').text(response.message));
+                return;
             }
-        },
-        error: function(xhr) {
-            console.log("Error HTTP: " + xhr.status);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo procesar la solicitud.',
+
+            if (response.is_self) {
+                mostrarAlerta('Tu sesión se cerrará por seguridad.', '¡Contraseña actualizada!', 'green', function() {
+                    window.location.href = response.redirect;
+                });
+                return;
+            }
+
+            mostrarAlerta(response.message, '¡Éxito!', 'green', function() {
+                $('#new-password').hide();
+                $('#mis-datos').show();
+                $('#pass_nueva, #pass_repetir').val('');
+                aviso.html('');
             });
+        },
+        error: function() {
+            mostrarAlerta('No se pudo procesar la solicitud.', 'Error');
         }
     });
 });

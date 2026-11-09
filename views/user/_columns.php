@@ -61,9 +61,8 @@ return [
       [
             'class' => 'yii\grid\ActionColumn',
             'header' => 'Acciones',
-            'contentOptions' => ['style' => 'width: ' . $columna_05 . ';'],
             'headerOptions' => ['class' => 'text-primary text-center', 'style' => 'width:150px'],
-            'contentOptions' => ['class' => 'text-center'],
+            'contentOptions' => ['class' => 'text-center text-nowrap'],
             'template' => '{view} {update} {roles} {toggle} {password}',
             'buttons' => [
                   'view' => function ($url, $model) {
@@ -105,7 +104,7 @@ return [
                               'class' => 'action-btn-custom',
                               'title' => 'Resetear contraseña',
                               'data-method' => 'post',
-                              'data-confirm' => '¿Estás seguro que querés resetear la contraseña de ' . $model->username . ' a 123456?',
+                              'data-confirm' => '¿Generar una contraseña temporal para ' . $model->username . '?',
                         ]);
                   },
 

@@ -67,24 +67,14 @@
 /* ==========================================================================
    Ajustes específicos para modo celular (Responsive Mobile)
    ========================================================================== */
-@media (max-width: 768px) {
-
-
-    @media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .diagonal-split-banner {
-        height: 205px !important;
-    }
-
-    .diagonal-split-banner .carousel,
-    .diagonal-split-banner .carousel-inner,
-    .diagonal-split-banner .carousel-item {
-        height: 205px !important;
+        height: auto;
+        aspect-ratio: 2.2 / 1;
     }
 
     .diagonal-split-banner .carousel-item img {
-        height: 205px !important;
-        object-fit: contain !important;
-        background-color: rgba(0, 0, 0, 0.4);
+        height: 100%;
+        object-position: center;
     }
-}
 }

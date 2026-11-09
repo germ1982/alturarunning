@@ -30,7 +30,7 @@ foreach ($instructores as $inst) {
 
     $htmlInstructores .= '<div>';
     $htmlInstructores .= '<span class="d-block" style="font-size: 0.75rem; line-height: 1;"><span class="text-danger fw-bold">PROFESOR:</span> <span class="text-white">' . Html::encode($inst['nombre'] . ' ' . $inst['apellido']) . '</span></span>';
-    $htmlInstructores .= '<span class="d-block" style="font-size: 0.6rem;"><span class="text-danger">Especialidad:</span> <span class="text-warning">' . Html::encode($inst['especialidad']) . '</span></span>';
+    $htmlInstructores .= '<span class="d-block" style="font-size: 0.75rem;"><span class="text-danger">Especialidad:</span> <span class="text-warning">' . Html::encode($inst['especialidad']) . '</span></span>';
     $htmlInstructores .= '</div>';
     $htmlInstructores .= '</div>';
 }
@@ -86,7 +86,7 @@ foreach ($lugaresConDatos as $idlugar => $nombreLugar) {
         // Bajamos el min-width y max-width para que entren cómodos al menos 3 o 4 por línea en el celu
         $htmlContent .= '<div class="px-1 py-1" style="min-width: 75px; flex: 1 1 auto; max-width: 110px;">';
         // Día arriba del horario
-        $htmlContent .= '<div class="text-danger fw-bold mb-1" style="font-size: 0.65rem;">' . $nombreDia . '</div>';
+        $htmlContent .= '<div class="text-danger fw-bold mb-1" style="font-size: 0.75rem;">' . $nombreDia . '</div>';
 
         foreach ($datos[$idlugar][$diaId] as $horario => $modalidades) {
             $htmlContent .= '<div class="lh-sm mb-1">';
@@ -98,7 +98,7 @@ foreach ($lugaresConDatos as $idlugar => $nombreLugar) {
                 $textoModalidad = $modalidades[0];
             }
 
-            $htmlContent .= '<span class="text-warning" style="font-size: 0.55rem;">(' . Html::encode($textoModalidad) . ')</span>';
+            $htmlContent .= '<span class="text-warning" style="font-size: 0.7rem;">(' . Html::encode($textoModalidad) . ')</span>';
             $htmlContent .= '</div>';
         }
 
