@@ -3,11 +3,12 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "sistema_log".
+ * Auditoría: quién hizo qué, sobre qué registro y cuándo.
  *
- * @property int $id_log
+ * @property int $id
  * @property int|null $idusuario
  * @property int $idmodulo
  * @property int $idaccion
@@ -17,24 +18,32 @@ use Yii;
  *
  * @property User $usuario
  */
-class SistemaLog extends \yii\db\ActiveRecord
+class SistemaLog extends ActiveRecord
 {
-    // Constantes de MÓDULOS
-    const MODULO_MIEMBROS = 0;
-    const MODULO_VENTAS = 1;
-    const MODULO_SERVICIOS = 2;
-    const MODULO_CONFIG = 3;
-    const MODULO_EMPRENDIMIENTOS = 4;
-    const MODULO_TRABAJOS = 5; // <--- Agregado aquí
+    // Módulos (los valores se conservan para no romper los registros existentes)
     const MODULO_USUARIOS = 6;
     const MODULO_DATOS = 7;
-    const MODULO_GRUPOS = 8;
     const MODULO_EVENTOS = 9;
-    const MODULO_INMOBILIARIO = 10;
     const MODULO_SITE = 11;
+    const MODULO_ALUMNOS = 12;
+    const MODULO_CUOTAS = 13;
+    const MODULO_OBJETIVOS = 14;
+    const MODULO_DOCUMENTACION = 15;
+    const MODULO_ROLES = 16;
 
+    const MODULOS = [
+        self::MODULO_USUARIOS => 'Usuarios',
+        self::MODULO_ROLES => 'Roles',
+        self::MODULO_ALUMNOS => 'Alumnos',
+        self::MODULO_CUOTAS => 'Cuotas',
+        self::MODULO_OBJETIVOS => 'Objetivos',
+        self::MODULO_DOCUMENTACION => 'Documentación',
+        self::MODULO_EVENTOS => 'Eventos',
+        self::MODULO_DATOS => 'Contenidos',
+        self::MODULO_SITE => 'Sitio',
+    ];
 
-    // Constantes de ACCIONES
+    // Acciones
     const ACCION_CREATE = 0;
     const ACCION_UPDATE = 1;
     const ACCION_DELETE = 2;
@@ -43,23 +52,33 @@ class SistemaLog extends \yii\db\ActiveRecord
     const ACCION_VER = 5;
     const ACCION_SOLICITUD = 6;
     const ACCION_INICIO_SESION = 7;
+    const ACCION_LOGIN_FALLIDO = 8;
+    const ACCION_APROBAR = 9;
+    const ACCION_RECHAZAR = 10;
 
+    const ACCIONES = [
+        self::ACCION_CREATE => 'Crear',
+        self::ACCION_UPDATE => 'Actualizar',
+        self::ACCION_DELETE => 'Eliminar',
+        self::ACCION_BANEAR => 'Banear',
+        self::ACCION_REACTIVAR => 'Reactivar',
+        self::ACCION_VER => 'Visualización',
+        self::ACCION_SOLICITUD => 'Solicitud',
+        self::ACCION_INICIO_SESION => 'Inicio de sesión',
+        self::ACCION_LOGIN_FALLIDO => 'Inicio de sesión fallido',
+        self::ACCION_APROBAR => 'Aprobar',
+        self::ACCION_RECHAZAR => 'Rechazar',
+    ];
 
-    /**
-     * {@inheritdoc}
-     */
     public static function tableName()
     {
         return '{{%sistema_log}}';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
-            [['idusuario', 'idmodulo', 'idaccion', 'id_registro_afectado', 'id'], 'integer'],
+            [['idusuario', 'idmodulo', 'idaccion', 'id_registro_afectado'], 'integer'],
             [['idmodulo', 'idaccion', 'descripcion'], 'required'],
             [['descripcion'], 'string'],
             [['fecha'], 'safe'],
@@ -67,137 +86,141 @@ class SistemaLog extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [
-            'id' => 'Id Log',
-            'idusuario' => 'Id Usuario',
-            'idmodulo' => 'Id Módulo',
-            'idaccion' => 'Id Acción',
-            'id_registro_afectado' => 'Id Registro Afectado',
+            'id' => 'Nº',
+            'idusuario' => 'Usuario',
+            'idmodulo' => 'Módulo',
+            'idaccion' => 'Acción',
+            'id_registro_afectado' => 'Registro afectado',
             'descripcion' => 'Descripción',
-            'observacion' => 'Observación',
-            'ip' => 'Ip',
             'fecha' => 'Fecha',
         ];
     }
 
-    /**
-     * Gets query for [[Usuario]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
     public function getUsuario()
     {
         return $this->hasOne(User::class, ['id' => 'idusuario']);
     }
 
-    /**
-     * Retorna el nombre del módulo según su ID.
-     *
-     * @param int $id El ID del módulo.
-     * @return string
-     */
     public static function getModuloNombre($id)
     {
-        $modulos = [
-            self::MODULO_MIEMBROS => 'Miembros',
-            self::MODULO_VENTAS => 'Ventas',
-            self::MODULO_SERVICIOS => 'Servicios',
-            self::MODULO_CONFIG => 'Configuración',
-            self::MODULO_EMPRENDIMIENTOS => 'Emprendimientos',
-            self::MODULO_TRABAJOS => 'Trabajos',
-            self::MODULO_USUARIOS => 'Usuarios',
-            self::MODULO_DATOS => 'Datos',
-            self::MODULO_GRUPOS => 'Grupos',
-            self::MODULO_EVENTOS => 'Eventos',
-            self::MODULO_INMOBILIARIO => 'Inmobiliarios',
-            self::MODULO_SITE => 'Site'
-        ];
+        return self::MODULOS[$id] ?? 'Desconocido';
+    }
 
-        return $modulos[$id] ?? 'Desconocido';
+    public static function getAccionNombre($id)
+    {
+        return self::ACCIONES[$id] ?? 'Desconocida';
+    }
+
+    public static function getListaModulos()
+    {
+        return self::MODULOS;
+    }
+
+    public static function getListaAcciones()
+    {
+        return self::ACCIONES;
     }
 
     /**
-     * Retorna el nombre de la acción según su ID.
-     *
-     * @param int $id El ID de la acción.
-     * @return string
+     * Guarda un registro de auditoría a nombre del usuario logueado (o ninguno).
      */
-    public static function getAccionNombre($id)
+    public static function registrar($idmodulo, $idaccion, $id_registro_afectado = null, $descripcion = ''): bool
     {
-        $acciones = [
-            self::ACCION_CREATE => 'Crear',
-            self::ACCION_UPDATE => 'Actualizar',
-            self::ACCION_DELETE => 'Eliminar',
-            self::ACCION_BANEAR => 'Banear',
-            self::ACCION_REACTIVAR => 'Reactivar',
-            self::ACCION_VER => 'Visualizacion',
-            self::ACCION_SOLICITUD => 'Solicitud',
-            self::ACCION_INICIO_SESION => 'Inicio Sesion',
-            
-        ];
-        return $acciones[$id] ?? 'Desconocida';
-    }
+        $usuario = Yii::$app->has('user') ? Yii::$app->user : null;
 
-    public static function registrar($idmodulo, $idaccion, $id_registro_afectado = null, $descripcion = '')
-    {
-        $idusuario = Yii::$app->user->id ?? null;
         $log = new self();
-        $log->idusuario = $idusuario;
+        $log->idusuario = $usuario !== null && !$usuario->isGuest ? $usuario->id : null;
         $log->idmodulo = $idmodulo;
         $log->idaccion = $idaccion;
         $log->id_registro_afectado = $id_registro_afectado;
         $log->descripcion = $descripcion;
         $log->fecha = date('Y-m-d H:i:s');
+
         if ($log->save()) {
-            return $log->save();
-        } else {
-            Yii::error('Error al registrar log: ' . json_encode($log->errors));
-            return false;
+            return true;
         }
-    }
 
-    // ... dentro de class SistemaLog ...
+        Yii::error('Error al registrar log: ' . json_encode($log->errors));
 
-    /**
-     * Retorna el array completo de módulos para filtros.
-     */
-    public static function getListaModulos()
-    {
-        return [
-            self::MODULO_MIEMBROS => 'Miembros',
-            self::MODULO_VENTAS => 'Ventas',
-            self::MODULO_SERVICIOS => 'Servicios',
-            self::MODULO_CONFIG => 'Configuración',
-            self::MODULO_EMPRENDIMIENTOS => 'Emprendimientos',
-            self::MODULO_TRABAJOS => 'Trabajos',
-            self::MODULO_USUARIOS => 'Usuarios',
-            self::MODULO_DATOS => 'Datos',
-            self::MODULO_GRUPOS => 'Grupos',
-            self::MODULO_EVENTOS => 'Eventos',
-            self::MODULO_INMOBILIARIO => 'Inmobiliario',
-            self::MODULO_SITE => 'Site',
-        ];
+        return false;
     }
 
     /**
-     * Retorna el array completo de acciones para filtros.
+     * Describe un cambio de valor, o null si no cambió.
+     *
+     * @param array|string|null $mapa valores => textos (por ejemplo una lista de ConstantesGlobales),
+     *                                o 'texto' para campos largos: solo avisa que se modificó.
      */
-    public static function getListaAcciones()
+    public static function cambio(string $etiqueta, $antes, $despues, $mapa = null): ?string
     {
-        return [
-            self::ACCION_CREATE => 'Crear',
-            self::ACCION_UPDATE => 'Actualizar',
-            self::ACCION_DELETE => 'Eliminar',
-            self::ACCION_BANEAR => 'Banear',
-            self::ACCION_REACTIVAR => 'Reactivar',
-            self::ACCION_VER => 'Visualizacion',
-            self::ACCION_SOLICITUD => 'Solicitud',
-            self::ACCION_INICIO_SESION => 'Inicio Sesion',
-        ];
+        if (self::mismoValor($antes, $despues)) {
+            return null;
+        }
+
+        if ($mapa === 'texto') {
+            return $etiqueta . ' modificada';
+        }
+
+        return $etiqueta . ': ' . self::valorTexto($antes, $mapa) . ' → ' . self::valorTexto($despues, $mapa);
+    }
+
+    /**
+     * Cambios de un ActiveRecord todavía sin guardar.
+     *
+     * @param array $campos atributo => etiqueta, o atributo => [etiqueta, mapa]
+     * @return string[]
+     */
+    public static function diferencias(ActiveRecord $modelo, array $campos): array
+    {
+        $cambios = [];
+
+        foreach ($campos as $atributo => $definicion) {
+            [$etiqueta, $mapa] = is_array($definicion) ? $definicion + [1 => null] : [$definicion, null];
+            $cambio = self::cambio($etiqueta, $modelo->getOldAttribute($atributo), $modelo->getAttribute($atributo), $mapa);
+
+            if ($cambio !== null) {
+                $cambios[] = $cambio;
+            }
+        }
+
+        return $cambios;
+    }
+
+    /**
+     * Descripción con el detalle de los cambios, uno por línea.
+     */
+    public static function conDetalle(string $descripcion, array $cambios): string
+    {
+        return $cambios === [] ? $descripcion : $descripcion . "\n- " . implode("\n- ", $cambios);
+    }
+
+    private static function mismoValor($antes, $despues): bool
+    {
+        $antes = $antes === null ? '' : trim((string) $antes);
+        $despues = $despues === null ? '' : trim((string) $despues);
+
+        if (is_numeric($antes) && is_numeric($despues)) {
+            return (float) $antes === (float) $despues;
+        }
+
+        return $antes === $despues;
+    }
+
+    private static function valorTexto($valor, $mapa): string
+    {
+        if ($valor === null || trim((string) $valor) === '') {
+            return '—';
+        }
+
+        if (is_array($mapa)) {
+            return (string) ($mapa[$valor] ?? $valor);
+        }
+
+        $texto = (string) $valor;
+
+        return mb_strlen($texto) > 80 ? mb_substr($texto, 0, 77) . '...' : $texto;
     }
 }

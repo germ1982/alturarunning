@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\helpers\UserHelper;
 use app\models\DocumentacionTipo;
 use app\models\PersonaDocumentacion;
+use app\models\SistemaLog;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -61,6 +62,7 @@ class DocumentacionTipoController extends Controller
             Yii::$app->session->setFlash('error', 'No se puede eliminar un tipo que ya tiene documentos cargados.');
         } else {
             $tipo->delete();
+            SistemaLog::registrar(SistemaLog::MODULO_DOCUMENTACION, SistemaLog::ACCION_DELETE, $tipo->idtipo_documentacion, 'Se eliminó el tipo de documentación ' . $tipo->descripcion);
             Yii::$app->session->setFlash('success', 'El tipo de documentación se eliminó.');
         }
 
@@ -69,7 +71,17 @@ class DocumentacionTipoController extends Controller
 
     private function formulario(DocumentacionTipo $tipo, string $vista)
     {
-        if ($tipo->load($this->request->post()) && $tipo->save()) {
+        if ($tipo->load($this->request->post()) && $tipo->validate()) {
+            $esNuevo = $tipo->isNewRecord;
+            $anterior = $tipo->getOldAttribute('descripcion');
+
+            $tipo->save(false);
+            SistemaLog::registrar(
+                SistemaLog::MODULO_DOCUMENTACION,
+                $esNuevo ? SistemaLog::ACCION_CREATE : SistemaLog::ACCION_UPDATE,
+                $tipo->idtipo_documentacion,
+                $esNuevo ? 'Se creó el tipo de documentación ' . $tipo->descripcion : 'Se renombró el tipo de documentación ' . $anterior . ' → ' . $tipo->descripcion
+            );
             Yii::$app->session->setFlash('success', 'El tipo de documentación se guardó correctamente.');
 
             return $this->redirect(['index']);

@@ -142,6 +142,16 @@ class SiteController extends Controller
             return $this->goBack();
       }
 
+      // Los intentos fallidos quedan en la auditoría (nunca la contraseña).
+      if ($this->request->isPost && trim((string) $model->username) !== '') {
+            SistemaLog::registrar(
+                SistemaLog::MODULO_USUARIOS,
+                SistemaLog::ACCION_LOGIN_FALLIDO,
+                $model->getUser()->id ?? null,
+                'Intento fallido de inicio de sesión con: ' . mb_substr(trim((string) $model->username), 0, 100)
+            );
+      }
+
       // 6. Limpia el campo de contraseña por seguridad si falla el login.
       $model->password = '';
 
@@ -267,11 +277,17 @@ class SiteController extends Controller
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        $modulo = Yii::$app->request->post('modulo');
-        $accion = Yii::$app->request->post('accion');
-        $descripcion = Yii::$app->request->post('descripcion');
+        // Para registrar desde JavaScript algo que solo pasa en el navegador. Queda a nombre
+        // del usuario logueado y marcado como enviado desde el navegador.
+        $modulo = (int) Yii::$app->request->post('modulo');
+        $accion = (int) Yii::$app->request->post('accion');
+        $descripcion = trim((string) Yii::$app->request->post('descripcion'));
 
-        $guardado = SistemaLog::registrar($modulo, $accion, null, $descripcion);
+        if (!isset(SistemaLog::MODULOS[$modulo]) || !isset(SistemaLog::ACCIONES[$accion]) || $descripcion === '') {
+            return ['success' => false, 'message' => 'Módulo, acción o descripción inválidos.'];
+        }
+
+        $guardado = SistemaLog::registrar($modulo, $accion, null, '[navegador] ' . mb_substr($descripcion, 0, 1000));
 
         return ['success' => $guardado];
     }

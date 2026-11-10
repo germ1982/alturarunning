@@ -128,14 +128,21 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $antes = ['Usuario' => $model->username, 'Email' => $model->email, 'Teléfono' => $model->telefono];
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                $despues = ['Usuario' => $model->username, 'Email' => $model->email, 'Teléfono' => $model->telefono];
+                $cambios = array_values(array_filter(array_map(
+                    static fn ($etiqueta) => SistemaLog::cambio($etiqueta, $antes[$etiqueta], $despues[$etiqueta]),
+                    array_keys($antes)
+                )));
+
                 SistemaLog::registrar(
                     SistemaLog::MODULO_USUARIOS,
                     SistemaLog::ACCION_UPDATE,
                     $model->id,
-                    "Se Edito el usuario $model->username"
+                    SistemaLog::conDetalle('Se editó el usuario ' . $model->username, $cambios)
                 );
                 Yii::$app->session->setFlash('success', 'Los datos se guardaron correctamente.');
 

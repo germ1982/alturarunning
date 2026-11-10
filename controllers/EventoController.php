@@ -189,6 +189,7 @@ class EventoController extends Controller
             Yii::$app->session->setFlash('error', 'Tu inscripción ya fue revisada: para darte de baja consultá con tu profe.');
         } else {
             $inscripcion->delete();
+            SistemaLog::registrar(SistemaLog::MODULO_EVENTOS, SistemaLog::ACCION_DELETE, $inscripcion->idinscripcion, $alumno->persona->getNombreCompleto() . ' retiró su solicitud en ' . $inscripcion->desafio->evento->titulo . ' - ' . $inscripcion->desafio->titulo);
             Yii::$app->session->setFlash('success', 'Retiraste tu solicitud.');
         }
 
@@ -197,15 +198,15 @@ class EventoController extends Controller
 
     public function actionAprobar($id)
     {
-        return $this->resolverSolicitud($id, ConstantesGlobales::INSCRIPCION_ACTIVA, 'aprobó');
+        return $this->resolverSolicitud($id, ConstantesGlobales::INSCRIPCION_ACTIVA, 'aprobó', SistemaLog::ACCION_APROBAR);
     }
 
     public function actionRechazar($id)
     {
-        return $this->resolverSolicitud($id, ConstantesGlobales::INSCRIPCION_CANCELADA, 'rechazó');
+        return $this->resolverSolicitud($id, ConstantesGlobales::INSCRIPCION_CANCELADA, 'rechazó', SistemaLog::ACCION_RECHAZAR);
     }
 
-    private function resolverSolicitud($id, int $estado, string $verbo)
+    private function resolverSolicitud($id, int $estado, string $verbo, int $accionLog)
     {
         $inscripcion = EventoInscripcion::findOne((int) $id);
 
@@ -229,7 +230,7 @@ class EventoController extends Controller
                 $inscripcion->estado_inscripcion = $estado;
                 $inscripcion->save(false);
 
-                SistemaLog::registrar(SistemaLog::MODULO_EVENTOS, SistemaLog::ACCION_UPDATE, $inscripcion->idinscripcion, 'Se ' . $verbo . ' la solicitud de ' . $inscripcion->persona->getNombreCompleto() . ' en ' . $inscripcion->desafio->titulo);
+                SistemaLog::registrar(SistemaLog::MODULO_EVENTOS, $accionLog, $inscripcion->idinscripcion, 'Se ' . $verbo . ' la solicitud de ' . $inscripcion->persona->getNombreCompleto() . ' en ' . $evento->titulo . ' - ' . $inscripcion->desafio->titulo);
                 Yii::$app->session->setFlash('success', 'Se ' . $verbo . ' la solicitud de ' . $inscripcion->persona->getNombreCompleto() . '.');
             }
 
@@ -347,7 +348,7 @@ class EventoController extends Controller
                 $modelo->cargar($this->request->post());
 
                 if ($modelo->guardar()) {
-                    SistemaLog::registrar(SistemaLog::MODULO_EVENTOS, $accion, $evento->idevento, $textoLog . $evento->titulo);
+                    SistemaLog::registrar(SistemaLog::MODULO_EVENTOS, $accion, $evento->idevento, SistemaLog::conDetalle($textoLog . $evento->titulo, $modelo->cambios));
                     Yii::$app->session->setFlash('success', 'El evento se guardó correctamente.');
 
                     return $this->redirect(['ver', 'id' => $evento->idevento]);

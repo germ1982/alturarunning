@@ -29,6 +29,9 @@ class AlumnoForm extends Model
     /** @var array<string, ObjetivoDesarrollo> */
     public array $objetivos = [];
 
+    /** @var string[] detalle de lo que cambió, para la auditoría */
+    public array $cambios = [];
+
     private ?UploadedFile $archivoFoto = null;
 
     public function __construct(Alumno $alumno, $config = [])
@@ -68,6 +71,8 @@ class AlumnoForm extends Model
             return false;
         }
 
+        $this->anotarCambios();
+
         $escrito = null;
         $aBorrar = [];
         $transaccion = Yii::$app->db->beginTransaction();
@@ -105,6 +110,95 @@ class AlumnoForm extends Model
     public function erroresGenerales(): array
     {
         return $this->getErrors('general');
+    }
+
+    /**
+     * Arma el detalle de cambios antes de guardar, mientras los modelos todavía
+     * conservan sus valores anteriores.
+     */
+    private function anotarCambios(): void
+    {
+        $c = ConstantesGlobales::class;
+
+        if ($this->personaExistente) {
+            $this->cambios[] = 'Se tomó a una persona ya registrada';
+        } elseif (!$this->persona->isNewRecord) {
+            $persona = SistemaLog::diferencias($this->persona, [
+                'nombre' => 'Nombre',
+                'apellido' => 'Apellido',
+                'documento' => 'Documento',
+                'fecha_nacimiento' => 'Nacimiento',
+                'telefono' => 'Teléfono',
+                'email' => 'Email',
+                'direccion' => 'Dirección',
+            ]);
+
+            if ($persona !== []) {
+                $this->cambios[] = 'Datos personales: ' . implode('; ', $persona);
+            }
+        }
+
+        $alumno = $this->alumno->isNewRecord
+            ? ['Modalidad ' . ($c::ROLES_ALUMNO[$this->alumno->rol] ?? '') . ', estado ' . ($c::ESTADOS_ALUMNO[$this->alumno->estado] ?? '')]
+            : SistemaLog::diferencias($this->alumno, ['rol' => ['Modalidad', $c::ROLES_ALUMNO], 'estado' => ['Estado', $c::ESTADOS_ALUMNO]]);
+
+        if ($alumno !== []) {
+            $this->cambios[] = 'Alumno: ' . implode('; ', $alumno);
+        }
+
+        if ($this->archivoFoto !== null) {
+            $this->cambios[] = 'Foto nueva';
+        } elseif ($this->quitarFoto) {
+            $this->cambios[] = 'Se quitó la foto';
+        }
+
+        $cuotas = [];
+        foreach (Cuota::find()->all() as $cuota) {
+            $cuotas[$cuota->idcuota] = $cuota->getMesTexto() . ' · ' . $cuota->getTipoTexto();
+        }
+
+        foreach ($this->pagos as $pago) {
+            $cuota = $cuotas[$pago->getOldAttribute('idcuota') ?: $pago->idcuota] ?? 'cuota ' . $pago->idcuota;
+
+            if ($pago->eliminar) {
+                if (!$pago->isNewRecord) {
+                    $this->cambios[] = 'Se quitó la cuota ' . $cuota;
+                }
+            } elseif ($pago->isNewRecord) {
+                $this->cambios[] = 'Cuota cargada: ' . $cuota . ' (' . EventoDesafio::formatearPrecio((float) $pago->monto) . ', ' . ($c::ESTADOS_CUOTA_PAGO[$pago->estado_pago] ?? '') . ')';
+            } else {
+                $detalle = SistemaLog::diferencias($pago, [
+                    'idcuota' => ['Cuota', $cuotas],
+                    'monto' => 'Monto',
+                    'estado_pago' => ['Estado', $c::ESTADOS_CUOTA_PAGO],
+                    'observacion' => ['Observación', 'texto'],
+                ]);
+
+                if ($detalle !== []) {
+                    $this->cambios[] = 'Cuota ' . $cuota . ': ' . implode('; ', $detalle);
+                }
+            }
+        }
+
+        $objetivos = Objetivo::find()->select(['descripcion', 'idobjetivo'])->indexBy('idobjetivo')->column();
+
+        foreach ($this->objetivos as $desarrollo) {
+            $objetivo = $objetivos[$desarrollo->idobjetivo] ?? 'objetivo ' . $desarrollo->idobjetivo;
+
+            if ($desarrollo->eliminar) {
+                if (!$desarrollo->isNewRecord) {
+                    $this->cambios[] = 'Se quitó el objetivo ' . $objetivo;
+                }
+            } elseif ($desarrollo->isNewRecord) {
+                $this->cambios[] = 'Objetivo asignado: ' . $objetivo . ' (' . ($c::ESTADOS_OBJETIVO[$desarrollo->estado] ?? '') . ')';
+            } else {
+                $cambio = SistemaLog::cambio('Objetivo ' . $objetivo, $desarrollo->getOldAttribute('estado'), $desarrollo->estado, $c::ESTADOS_OBJETIVO);
+
+                if ($cambio !== null) {
+                    $this->cambios[] = $cambio;
+                }
+            }
+        }
     }
 
     private function aplicarPersona(array $post): void

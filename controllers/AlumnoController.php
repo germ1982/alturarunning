@@ -137,7 +137,7 @@ class AlumnoController extends Controller
         $nombre = $alumno->persona->getNombreCompleto();
         $alumno->delete();
 
-        SistemaLog::registrar(SistemaLog::MODULO_MIEMBROS, SistemaLog::ACCION_DELETE, (int) $id, 'Se eliminó al alumno ' . $nombre);
+        SistemaLog::registrar(SistemaLog::MODULO_ALUMNOS, SistemaLog::ACCION_DELETE, (int) $id, 'Se eliminó al alumno ' . $nombre);
         Yii::$app->session->setFlash('success', 'El alumno se eliminó correctamente. Sus datos personales se conservan.');
 
         return $this->redirect(['index']);
@@ -155,7 +155,7 @@ class AlumnoController extends Controller
                 $modelo->cargar($this->request->post());
 
                 if ($modelo->guardar()) {
-                    SistemaLog::registrar(SistemaLog::MODULO_MIEMBROS, $accion, $alumno->idalumno, $textoLog . $modelo->persona->getNombreCompleto());
+                    SistemaLog::registrar(SistemaLog::MODULO_ALUMNOS, $accion, $alumno->idalumno, SistemaLog::conDetalle($textoLog . $modelo->persona->getNombreCompleto(), $modelo->cambios));
                     Yii::$app->session->setFlash('success', 'El alumno se guardó correctamente.');
 
                     return $this->redirect(['ver', 'id' => $alumno->idalumno]);

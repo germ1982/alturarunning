@@ -1,56 +1,53 @@
 <?php
+
 use app\models\SistemaLog;
-use yii\widgets\DetailView;
 use yii\helpers\Html;
+use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var app\models\SistemaLog $model */
-?>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-6 border-end">
-            <h5 class="mb-3 text-primary"><i class="bi bi-info-circle me-2"></i>Información General</h5>
+$this->title = 'Registro de auditoría Nº ' . $model->id;
+?>
+<div class="neon-container mt-5 mb-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div class="neon-title-container"><?= Html::encode($this->title) ?></div>
+        <?= Html::a('<i class="fas fa-reply"></i> Volver', ['index'], ['class' => 'btn btn-outline-light btn-sm']) ?>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-5">
             <?= DetailView::widget([
                 'model' => $model,
-                'options' => ['class' => 'table table-sm'],
+                'options' => ['class' => 'table table-sm table-stark'],
                 'attributes' => [
                     [
                         'attribute' => 'fecha',
-                        'label' => 'Fecha',
-                        'value' => function ($model) {
-                            return date('d/m/Y H:i:s', strtotime($model->fecha));
-                        },
+                        'value' => date('d/m/Y H:i:s', strtotime($model->fecha)),
                     ],
                     [
-                        'attribute' => 'usuario.username',
-                        'label' => 'Usuario',
-                        'value' => $model->usuario ? Html::encode($model->usuario->username) : 'Sistema',
+                        'attribute' => 'idusuario',
+                        'value' => $model->usuario->username ?? 'Invitado',
                     ],
                     [
                         'attribute' => 'idmodulo',
-                        'label' => 'Módulo',
                         'value' => SistemaLog::getModuloNombre($model->idmodulo),
                     ],
                     [
                         'attribute' => 'idaccion',
-                        'label' => 'Acción',
                         'value' => SistemaLog::getAccionNombre($model->idaccion),
                     ],
                     [
                         'attribute' => 'id_registro_afectado',
-                        'label' => 'Registro Afectado',
-                        'value' => $model->id_registro_afectado ?? 'N/A',
+                        'value' => $model->id_registro_afectado ?? '—',
                     ],
                 ],
             ]) ?>
         </div>
 
-        <div class="col-md-6 ps-4">
-            <h5 class="mb-3 text-primary"><i class="bi bi-file-text me-2"></i>Descripción</h5>
-            <div class="alert alert-light border">
-                <?= nl2br(Html::encode($model->descripcion)) ?>
-            </div>
+        <div class="col-12 col-lg-7">
+            <h5 class="text-danger mb-2"><i class="bi bi-file-text me-2"></i>Descripción</h5>
+            <div style="white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6;"><?= Html::encode($model->descripcion) ?></div>
         </div>
     </div>
 </div>

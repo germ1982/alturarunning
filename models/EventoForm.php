@@ -33,6 +33,9 @@ class EventoForm extends Model
     /** @var array<string, array<string, EventoInscripcion>> por clave de desafío */
     public array $inscripciones = [];
 
+    /** @var string[] detalle de lo que cambió, para la auditoría */
+    public array $cambios = [];
+
     /** @var UploadedFile[] */
     private array $archivosEvento = [];
     /** @var array<string, UploadedFile[]> */
@@ -107,6 +110,8 @@ class EventoForm extends Model
             return false;
         }
 
+        $this->anotarCambios();
+
         $escritos = [];
         $aBorrar = [];
         $transaccion = Yii::$app->db->beginTransaction();
@@ -143,6 +148,111 @@ class EventoForm extends Model
     {
         if (str_starts_with((string) $ruta, self::CARPETA_EVENTOS . '/') && !str_contains((string) $ruta, '..')) {
             @unlink(Yii::getAlias('@webroot/' . $ruta));
+        }
+    }
+
+    /**
+     * Arma el detalle de cambios antes de guardar, mientras los modelos todavía
+     * conservan sus valores anteriores.
+     */
+    private function anotarCambios(): void
+    {
+        $c = ConstantesGlobales::class;
+
+        if (!$this->evento->isNewRecord) {
+            $evento = SistemaLog::diferencias($this->evento, [
+                'titulo' => 'Título',
+                'fecha_evento' => 'Fecha',
+                'estado' => ['Estado', $c::ESTADOS_EVENTO],
+                'cupo' => 'Cupo',
+                'contacto' => 'Contacto',
+                'link' => 'Enlace',
+                'descripcion' => ['Descripción', 'texto'],
+            ]);
+
+            if ($evento !== []) {
+                $this->cambios[] = 'Evento: ' . implode('; ', $evento);
+            }
+        }
+
+        $this->anotarFotos('Fotos del evento', $this->fotos, count($this->archivosEvento));
+
+        $idsPersonas = [];
+        foreach ($this->inscripciones as $filas) {
+            foreach ($filas as $inscripcion) {
+                $idsPersonas[] = (int) $inscripcion->idpersona;
+                $idsPersonas[] = (int) $inscripcion->getOldAttribute('idpersona');
+            }
+        }
+
+        $personas = [];
+        foreach (Persona::find()->where(['idpersona' => array_unique($idsPersonas)])->all() as $persona) {
+            $personas[$persona->idpersona] = $persona->getNombreCompleto();
+        }
+
+        foreach ($this->desafios as $clave => $desafio) {
+            $nombre = $desafio->getOldAttribute('titulo') ?: $desafio->titulo;
+
+            if ($desafio->eliminar && !$desafio->isNewRecord) {
+                $this->cambios[] = 'Se eliminó el desafío ' . $nombre;
+            } elseif ($desafio->isNewRecord && !$desafio->eliminar) {
+                $this->cambios[] = 'Desafío nuevo: ' . $nombre . ' (' . ($c::DIFICULTADES[$desafio->dificultad] ?? '') . ', ' . EventoDesafio::formatearPrecio((float) $desafio->precio) . ')';
+            } elseif (!$desafio->eliminar) {
+                $detalle = SistemaLog::diferencias($desafio, [
+                    'titulo' => 'Título',
+                    'dificultad' => ['Dificultad', $c::DIFICULTADES],
+                    'precio' => 'Precio',
+                    'descripcion' => ['Descripción', 'texto'],
+                ]);
+
+                if ($detalle !== []) {
+                    $this->cambios[] = 'Desafío ' . $nombre . ': ' . implode('; ', $detalle);
+                }
+            }
+
+            if (!$desafio->eliminar) {
+                $this->anotarFotos('Fotos de ' . $nombre, $this->fotosDesafio[$clave], count($this->archivosDesafio[$clave] ?? []));
+            }
+
+            foreach ($this->inscripciones[$clave] as $inscripcion) {
+                $persona = $personas[$inscripcion->getOldAttribute('idpersona') ?: $inscripcion->idpersona] ?? 'persona ' . $inscripcion->idpersona;
+
+                if ($inscripcion->eliminar || $desafio->eliminar) {
+                    if (!$inscripcion->isNewRecord) {
+                        $this->cambios[] = 'Se quitó la inscripción de ' . $persona . ' en ' . $nombre;
+                    }
+                } elseif ($inscripcion->isNewRecord) {
+                    $this->cambios[] = 'Inscripción nueva: ' . $persona . ' en ' . $nombre
+                        . ' (' . ($c::ESTADOS_INSCRIPCION[$inscripcion->estado_inscripcion] ?? '') . ', pago ' . ($c::ESTADOS_PAGO[$inscripcion->estado_pago] ?? '') . ')';
+                } else {
+                    $detalle = SistemaLog::diferencias($inscripcion, [
+                        'idpersona' => ['Persona', $personas],
+                        'estado_inscripcion' => ['Inscripción', $c::ESTADOS_INSCRIPCION],
+                        'estado_pago' => ['Pago', $c::ESTADOS_PAGO],
+                        'descuento' => 'Descuento %',
+                        'puesto' => 'Puesto',
+                        'tiempo' => 'Tiempo',
+                        'observacion' => ['Observación', 'texto'],
+                    ]);
+
+                    if ($detalle !== []) {
+                        $this->cambios[] = 'Inscripción de ' . $persona . ' en ' . $nombre . ': ' . implode('; ', $detalle);
+                    }
+                }
+            }
+        }
+    }
+
+    private function anotarFotos(string $titulo, array $fotos, int $nuevas): void
+    {
+        $eliminadas = count(array_filter($fotos, static fn ($foto) => $foto->eliminar));
+        $partes = array_filter([
+            $nuevas > 0 ? $nuevas . ' nuevas' : null,
+            $eliminadas > 0 ? $eliminadas . ' eliminadas' : null,
+        ]);
+
+        if ($partes !== []) {
+            $this->cambios[] = $titulo . ': ' . implode(', ', $partes);
         }
     }
 

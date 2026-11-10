@@ -42,6 +42,16 @@ $secciones = [
                             'icon' => '<i class="fas fa-id-card"></i>',
                         ]); ?>
                     </div>
+
+                    <?php if (UserHelper::puede('auditorias')): ?>
+                        <div class="my-2">
+                            <?= NeonButtonWidget::widget([
+                                'label' => 'Auditorías',
+                                'url' => Url::to(['sistema_log/index']),
+                                'icon' => '<i class="fas fa-clipboard-list"></i>',
+                            ]); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

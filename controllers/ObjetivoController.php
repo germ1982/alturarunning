@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\helpers\UserHelper;
 use app\models\Objetivo;
 use app\models\ObjetivoDesarrollo;
+use app\models\SistemaLog;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -61,6 +62,7 @@ class ObjetivoController extends Controller
             Yii::$app->session->setFlash('error', 'No se puede eliminar un objetivo asignado a alumnos.');
         } else {
             $objetivo->delete();
+            SistemaLog::registrar(SistemaLog::MODULO_OBJETIVOS, SistemaLog::ACCION_DELETE, $objetivo->idobjetivo, 'Se eliminó el objetivo ' . $objetivo->descripcion);
             Yii::$app->session->setFlash('success', 'El objetivo se eliminó correctamente.');
         }
 
@@ -69,7 +71,17 @@ class ObjetivoController extends Controller
 
     private function formulario(Objetivo $objetivo, string $vista)
     {
-        if ($objetivo->load($this->request->post()) && $objetivo->save()) {
+        if ($objetivo->load($this->request->post()) && $objetivo->validate()) {
+            $esNuevo = $objetivo->isNewRecord;
+            $cambios = SistemaLog::diferencias($objetivo, ['descripcion' => 'Descripción', 'puntaje' => 'Puntaje']);
+
+            $objetivo->save(false);
+            SistemaLog::registrar(
+                SistemaLog::MODULO_OBJETIVOS,
+                $esNuevo ? SistemaLog::ACCION_CREATE : SistemaLog::ACCION_UPDATE,
+                $objetivo->idobjetivo,
+                $esNuevo ? 'Se creó el objetivo ' . $objetivo->descripcion . ' (' . $objetivo->puntaje . ' pts)' : SistemaLog::conDetalle('Se editó el objetivo ' . $objetivo->descripcion, $cambios)
+            );
             Yii::$app->session->setFlash('success', 'El objetivo se guardó correctamente.');
 
             return $this->redirect(['index']);

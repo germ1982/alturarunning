@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\helpers\UserHelper;
 use app\models\Alumno;
+use app\models\Persona;
 use app\models\PersonaDocumentacion;
 use app\models\SistemaLog;
 use Yii;
@@ -79,7 +80,7 @@ class DocumentacionController extends Controller
             throw $e;
         }
 
-        SistemaLog::registrar(SistemaLog::MODULO_MIEMBROS, SistemaLog::ACCION_CREATE, $documento->iddocumentacion, 'Se subió ' . $documento->tipo->descripcion . ' de ' . $alumno->persona->getNombreCompleto());
+        SistemaLog::registrar(SistemaLog::MODULO_DOCUMENTACION, SistemaLog::ACCION_CREATE, $documento->iddocumentacion, 'Se subió ' . $documento->tipo->descripcion . ' de ' . $alumno->persona->getNombreCompleto());
         Yii::$app->session->setFlash('success', 'La documentación se subió correctamente.');
 
         return $this->redirect(['alumno/ver', 'id' => $alumno->idalumno, '#' => 'documentacion']);
@@ -92,6 +93,12 @@ class DocumentacionController extends Controller
 
         if (!is_file($ruta)) {
             throw new NotFoundHttpException('El archivo no existe.');
+        }
+
+        // Queda registrado cada vez que alguien abre la documentación de otra persona.
+        if ((int) (Yii::$app->user->identity->idpersona ?? 0) !== (int) $documento->idpersona) {
+            $persona = Persona::findOne($documento->idpersona);
+            SistemaLog::registrar(SistemaLog::MODULO_DOCUMENTACION, SistemaLog::ACCION_VER, $documento->iddocumentacion, 'Se abrió ' . $documento->tipo->descripcion . ' de ' . ($persona !== null ? $persona->getNombreCompleto() : 'la persona ' . $documento->idpersona));
         }
 
         $respuesta = Yii::$app->response;
@@ -113,7 +120,7 @@ class DocumentacionController extends Controller
         $documento->delete();
         @unlink($ruta);
 
-        SistemaLog::registrar(SistemaLog::MODULO_MIEMBROS, SistemaLog::ACCION_DELETE, (int) $id, 'Se eliminó ' . $documento->tipo->descripcion . ' de la persona ' . $documento->idpersona);
+        SistemaLog::registrar(SistemaLog::MODULO_DOCUMENTACION, SistemaLog::ACCION_DELETE, (int) $id, 'Se eliminó ' . $documento->tipo->descripcion . ' de la persona ' . $documento->idpersona);
         Yii::$app->session->setFlash('success', 'La documentación se eliminó.');
 
         return $alumno !== null

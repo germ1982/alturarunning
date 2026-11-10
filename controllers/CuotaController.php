@@ -7,6 +7,7 @@ use app\models\Alumno;
 use app\models\ConstantesGlobales;
 use app\models\Cuota;
 use app\models\CuotaPago;
+use app\models\SistemaLog;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -63,6 +64,7 @@ class CuotaController extends Controller
             Yii::$app->session->setFlash('error', 'No se puede eliminar una cuota que ya tiene pagos cargados.');
         } else {
             $cuota->delete();
+            SistemaLog::registrar(SistemaLog::MODULO_CUOTAS, SistemaLog::ACCION_DELETE, $cuota->idcuota, 'Se eliminó la cuota ' . $cuota->getEtiqueta());
             Yii::$app->session->setFlash('success', 'La cuota se eliminó correctamente.');
         }
 
@@ -94,6 +96,8 @@ class CuotaController extends Controller
             Yii::$app->db->createCommand()
                 ->batchInsert(CuotaPago::tableName(), ['idcuota', 'idalumno', 'monto', 'estado_pago'], $filas)
                 ->execute();
+
+            SistemaLog::registrar(SistemaLog::MODULO_CUOTAS, SistemaLog::ACCION_CREATE, $cuota->idcuota, 'Se generaron ' . count($filas) . ' pagos pendientes de ' . $cuota->getEtiqueta());
         }
 
         Yii::$app->session->setFlash('success', 'Se generaron ' . count($filas) . ' pagos pendientes para ' . $cuota->getMesTexto() . '.');
@@ -103,7 +107,21 @@ class CuotaController extends Controller
 
     private function formulario(Cuota $cuota, string $vista)
     {
-        if ($cuota->load($this->request->post()) && $cuota->save()) {
+        if ($cuota->load($this->request->post()) && $cuota->validate()) {
+            $esNueva = $cuota->isNewRecord;
+            $cambios = SistemaLog::diferencias($cuota, [
+                'mes' => 'Mes',
+                'tipo' => ['Tipo', ConstantesGlobales::TIPOS_CUOTA],
+                'monto' => 'Monto',
+            ]);
+
+            $cuota->save(false);
+            SistemaLog::registrar(
+                SistemaLog::MODULO_CUOTAS,
+                $esNueva ? SistemaLog::ACCION_CREATE : SistemaLog::ACCION_UPDATE,
+                $cuota->idcuota,
+                $esNueva ? 'Se creó la cuota ' . $cuota->getEtiqueta() : SistemaLog::conDetalle('Se editó la cuota ' . $cuota->getMesTexto(), $cambios)
+            );
             Yii::$app->session->setFlash('success', 'La cuota se guardó correctamente.');
 
             return $this->redirect(['index']);
