@@ -75,4 +75,112 @@ class ConstantesGlobales extends Component
         self::PISTA_ATLETISMO_ALLEN => 'Pista de Atletismo Allen',
         self::LETRAS_PARQUE_INTEGRACION => 'Letras En Parque Integración de Allen',
     ];
+
+    const EVENTO_INACTIVO = 0;
+    const EVENTO_ACTIVO = 1;
+
+    const ESTADOS_EVENTO = [
+        self::EVENTO_ACTIVO => 'Activo',
+        self::EVENTO_INACTIVO => 'Inactivo',
+    ];
+
+    const DIFICULTAD_BAJA = 1;
+    const DIFICULTAD_MEDIA = 2;
+    const DIFICULTAD_ALTA = 3;
+
+    const DIFICULTADES = [
+        self::DIFICULTAD_BAJA => 'Baja',
+        self::DIFICULTAD_MEDIA => 'Media',
+        self::DIFICULTAD_ALTA => 'Alta',
+    ];
+
+    const FOTO_INACTIVA = 0;
+    const FOTO_ACTIVA = 1;
+
+    const ESTADOS_FOTO = [
+        self::FOTO_ACTIVA => 'Visible',
+        self::FOTO_INACTIVA => 'Oculta',
+    ];
+
+    const PAGO_COMPLETO = 1;
+    const PAGO_PENDIENTE = 2;
+    const PAGO_PARCIAL = 3;
+
+    const ESTADOS_PAGO = [
+        self::PAGO_COMPLETO => 'Completo',
+        self::PAGO_PENDIENTE => 'Pendiente',
+        self::PAGO_PARCIAL => 'Parcial',
+    ];
+
+    const INSCRIPCION_ACTIVA = 1;
+    const INSCRIPCION_CANCELADA = 2;
+    const INSCRIPCION_GUARDADA = 3;
+    const INSCRIPCION_SOLICITADA = 4; // pedida por el alumno, espera que la apruebe un profe
+
+    const ESTADOS_INSCRIPCION = [
+        self::INSCRIPCION_ACTIVA => 'Activa',
+        self::INSCRIPCION_CANCELADA => 'Cancelada',
+        self::INSCRIPCION_GUARDADA => 'Guardada',
+        self::INSCRIPCION_SOLICITADA => 'Solicitada',
+    ];
+
+    /** Inscripciones que se muestran al público y ocupan cupo. */
+    const INSCRIPCIONES_CONFIRMADAS = [self::INSCRIPCION_ACTIVA, self::INSCRIPCION_GUARDADA];
+
+    /** Inscripciones que reservan lugar: las confirmadas más las solicitudes pendientes. */
+    const INSCRIPCIONES_CON_LUGAR = [self::INSCRIPCION_ACTIVA, self::INSCRIPCION_GUARDADA, self::INSCRIPCION_SOLICITADA];
+
+    const ALUMNO_CAMINANTE = 1;
+    const ALUMNO_CORREDOR = 2;
+    const ALUMNO_MIXTO = 3;
+
+    const ROLES_ALUMNO = [
+        self::ALUMNO_CAMINANTE => 'Caminante',
+        self::ALUMNO_CORREDOR => 'Corredor',
+        self::ALUMNO_MIXTO => 'Mixto',
+    ];
+
+    const ALUMNO_ACTIVO = 1;
+    const ALUMNO_INACTIVO = 2;
+    const ALUMNO_SANCIONADO = 3;
+
+    const ESTADOS_ALUMNO = [
+        self::ALUMNO_ACTIVO => 'Activo',
+        self::ALUMNO_INACTIVO => 'Inactivo',
+        self::ALUMNO_SANCIONADO => 'Sancionado',
+    ];
+
+    const CUOTA_CLASE_NORMAL = 1;
+    const CUOTA_CLASE_PERSONALIZADA = 2;
+
+    const TIPOS_CUOTA = [
+        self::CUOTA_CLASE_NORMAL => 'Clase normal',
+        self::CUOTA_CLASE_PERSONALIZADA => 'Clase personalizada',
+    ];
+
+    const CUOTA_PENDIENTE = 1;
+    const CUOTA_ATRASADO = 2;
+    const CUOTA_SALDADO = 3;
+    const CUOTA_PACTADO = 4;
+    const CUOTA_RECARGO_ATRASO = 5;
+    const CUOTA_DEUDOR = 6;
+
+    const ESTADOS_CUOTA_PAGO = [
+        self::CUOTA_PENDIENTE => 'Pendiente',
+        self::CUOTA_ATRASADO => 'Atrasado',
+        self::CUOTA_SALDADO => 'Saldado',
+        self::CUOTA_PACTADO => 'Pactado',
+        self::CUOTA_RECARGO_ATRASO => 'Recargo por atraso',
+        self::CUOTA_DEUDOR => 'Deudor',
+    ];
+
+    const OBJETIVO_PENDIENTE = 1;
+    const OBJETIVO_EN_CURSO = 2;
+    const OBJETIVO_CUMPLIDO = 3;
+
+    const ESTADOS_OBJETIVO = [
+        self::OBJETIVO_PENDIENTE => 'Pendiente',
+        self::OBJETIVO_EN_CURSO => 'En curso',
+        self::OBJETIVO_CUMPLIDO => 'Cumplido',
+    ];
 }

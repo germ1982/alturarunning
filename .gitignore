@@ -44,3 +44,5 @@ vendor.zip
 /web/images/personas
 /web/images/sistema/carrusel_banner
 /web/images/sistema/about
+# Documentación de personas: nunca dentro de web/ ni en el repositorio
+/archivos

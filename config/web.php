@@ -6,6 +6,8 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
+    'timeZone' => 'America/Argentina/Buenos_Aires',
+    'language' => 'es',
     'bootstrap' => ['log'],
     'container' => [
         'singletons' => [
@@ -28,6 +30,10 @@ $config = [
         ],
         'cache' => [
             'class' => \yii\caching\FileCache::class,
+        ],
+        'assetManager' => [
+            // Agrega ?v=<fecha del archivo> a CSS y JS: al cambiarlos, el navegador no usa la copia vieja.
+            'appendTimestamp' => true,
         ],
         'user' => [
             'identityClass' => \app\models\User::class,

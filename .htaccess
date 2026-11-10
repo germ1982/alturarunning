@@ -1,0 +1,10 @@
+# Cuando el proyecto queda dentro de la carpeta pública (por ejemplo en XAMPP),
+# solo web/ debe poder abrirse desde el navegador: .env, config, archivos de
+# alumnos y el resto del código responden "prohibido".
+RewriteEngine On
+
+# La raíz del proyecto lleva al sitio.
+RewriteCond %{REQUEST_URI} ^(.*)/$
+RewriteRule ^$ %1/web/ [R=302,L]
+
+RewriteRule ^(?!web/) - [F]

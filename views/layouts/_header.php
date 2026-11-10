@@ -21,11 +21,11 @@ $items = [
     ],
     [
         'label' => 'Eventos',
-        'url' => ['/site/eventos'],
+        'url' => ['/evento/listado'],
     ],
     [
         'label' => 'Alumnos',
-        'url' => ['/site/alumnos'],
+        'url' => ['/alumno/listado'],
     ],
 
 

@@ -201,14 +201,14 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
-    public function actionEventos(): string
+    public function actionEventos(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['evento/listado']);
     }
 
-    public function actionAlumnos(): string
+    public function actionAlumnos(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['alumno/listado']);
     }
 
     public function actionPanel_administrar()
@@ -219,14 +219,14 @@ class SiteController extends Controller
         return $this->render('panel_control');
     }
 
-    public function actionGestionar_alumnos(): string
+    public function actionGestionar_alumnos(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['alumno/index']);
     }
 
-    public function actionGestionar_eventos(): string
+    public function actionGestionar_eventos(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['evento/index']);
     }
     public function actionGestionar_contenidos(): string
     {
