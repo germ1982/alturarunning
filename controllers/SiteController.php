@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use Yii;
+use app\helpers\TemaHelper;
+use app\helpers\UserHelper;
 use app\models\ContactForm;
 use app\models\LoginForm;
 use app\models\SistemaLog;
@@ -38,21 +40,47 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout'],
+                'only' => [
+                    'logout',
+                    'panel_administrar',
+                    'registrar_log_ajax',
+                    'gestionar_usuarios',
+                    'gestionar_contenidos',
+                    'gestionar_eventos',
+                    'gestionar_alumnos',
+                    'gestionar_profesores',
+                    'aspecto',
+                ],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'panel_administrar', 'registrar_log_ajax'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+                    $this->reglaPermiso('gestionar_usuarios', 'usuarios'),
+                    $this->reglaPermiso('gestionar_contenidos', 'contenidos'),
+                    $this->reglaPermiso('gestionar_eventos', 'eventos'),
+                    $this->reglaPermiso('gestionar_alumnos', 'alumnos'),
+                    $this->reglaPermiso('gestionar_profesores', 'profesores'),
+                    $this->reglaPermiso('aspecto', 'aspecto'),
                 ],
             ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
+                    'registrar_log_ajax' => ['post'],
                 ],
             ],
+        ];
+    }
+
+    private function reglaPermiso(string $accion, string $permiso): array
+    {
+        return [
+            'actions' => [$accion],
+            'allow' => true,
+            'matchCallback' => static fn () => UserHelper::puede($permiso),
         ];
     }
 
@@ -117,6 +145,16 @@ class SiteController extends Controller
             return $this->goBack();
       }
 
+      // Los intentos fallidos quedan en la auditoría (nunca la contraseña).
+      if ($this->request->isPost && trim((string) $model->username) !== '') {
+            SistemaLog::registrar(
+                SistemaLog::MODULO_USUARIOS,
+                SistemaLog::ACCION_LOGIN_FALLIDO,
+                $model->getUser()->id ?? null,
+                'Intento fallido de inicio de sesión con: ' . mb_substr(trim((string) $model->username), 0, 100)
+            );
+      }
+
       // 6. Limpia el campo de contraseña por seguridad si falla el login.
       $model->password = '';
 
@@ -176,14 +214,14 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
-    public function actionEventos(): string
+    public function actionEventos(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['evento/listado']);
     }
 
-    public function actionAlumnos(): string
+    public function actionAlumnos(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['alumno/listado']);
     }
 
     public function actionPanel_administrar()
@@ -194,18 +232,18 @@ class SiteController extends Controller
         return $this->render('panel_control');
     }
 
-    public function actionGestionar_alumnos(): string
+    public function actionGestionar_alumnos(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['alumno/index']);
     }
 
-    public function actionGestionar_eventos(): string
+    public function actionGestionar_eventos(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['evento/index']);
     }
-    public function actionGestionar_contenidos(): string
+    public function actionGestionar_contenidos(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['contenido/index']);
     }
 
     public function actionGestionar_usuarios()
@@ -213,11 +251,38 @@ class SiteController extends Controller
         return $this->redirect(['user/index']);
     }
 
-    public function actionGestionar_profesores(): string
+    public function actionGestionar_profesores(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['profesor/index']);
     }
 
+
+    /**
+     * Elegir el tema visual de todo el sitio.
+     */
+    public function actionAspecto()
+    {
+        $actual = TemaHelper::actual();
+        $elegido = (string) $this->request->post('tema');
+
+        if ($this->request->isPost && isset(TemaHelper::TEMAS[$elegido])) {
+            if ($elegido !== $actual) {
+                TemaHelper::guardar($elegido);
+                SistemaLog::registrar(
+                    SistemaLog::MODULO_DATOS,
+                    SistemaLog::ACCION_UPDATE,
+                    null,
+                    'Se cambió el aspecto del sitio: ' . TemaHelper::nombre($actual) . ' → ' . TemaHelper::nombre($elegido)
+                );
+            }
+
+            Yii::$app->session->setFlash('success', 'El sitio ahora usa el tema ' . TemaHelper::nombre($elegido) . '.');
+
+            return $this->redirect(['aspecto']);
+        }
+
+        return $this->render('aspecto', ['actual' => $actual]);
+    }
 
     public function actionRegistro()
     {
@@ -242,11 +307,17 @@ class SiteController extends Controller
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        $modulo = Yii::$app->request->post('modulo');
-        $accion = Yii::$app->request->post('accion');
-        $descripcion = Yii::$app->request->post('descripcion');
+        // Para registrar desde JavaScript algo que solo pasa en el navegador. Queda a nombre
+        // del usuario logueado y marcado como enviado desde el navegador.
+        $modulo = (int) Yii::$app->request->post('modulo');
+        $accion = (int) Yii::$app->request->post('accion');
+        $descripcion = trim((string) Yii::$app->request->post('descripcion'));
 
-        $guardado = SistemaLog::registrar($modulo, $accion, null, $descripcion);
+        if (!isset(SistemaLog::MODULOS[$modulo]) || !isset(SistemaLog::ACCIONES[$accion]) || $descripcion === '') {
+            return ['success' => false, 'message' => 'Módulo, acción o descripción inválidos.'];
+        }
+
+        $guardado = SistemaLog::registrar($modulo, $accion, null, '[navegador] ' . mb_substr($descripcion, 0, 1000));
 
         return ['success' => $guardado];
     }

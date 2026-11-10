@@ -21,7 +21,7 @@ window.mostrarAlerta = function(mensaje, titulo = 'Información', type = 'red', 
             if (typeof onClose === 'function') onClose();
         },
         onOpen: function() {
-            this.$title.css({ 'text-align': 'center', 'width': '100%', 'color': '#ff3333' });
+            this.$title.css({ 'text-align': 'center', 'width': '100%', 'color': 'var(--acento)' });
             this.$btnc.css({ 'display': 'flex', 'justify-content': 'center', 'width': '100%', 'float': 'none' });
         }
     });
@@ -51,7 +51,7 @@ window.mostrarConfirmacion = function(titulo, mensaje, onConfirm, imageUrl = nul
         buttons: {
             confirmar: {
                 text: 'Sí, obio',
-                btnClass: 'btn-danger',
+                btnClass: 'btn-acento',
                 action: function() {
                     if (typeof onConfirm === 'function') onConfirm();
                 }
@@ -62,7 +62,7 @@ window.mostrarConfirmacion = function(titulo, mensaje, onConfirm, imageUrl = nul
             }
         },
         onOpen: function() {
-            this.$title.css({ 'text-align': 'center', 'width': '100%', 'color': '#ff3333' });
+            this.$title.css({ 'text-align': 'center', 'width': '100%', 'color': 'var(--acento)' });
             this.$btnc.css({ 'display': 'flex', 'justify-content': 'center', 'width': '100%', 'float': 'none', 'gap': '10px' });
         }
     });

@@ -18,7 +18,7 @@ class AppIndexGenericoHelper
             $html = '<div class="user-index container-fluid" mt-4>';
             $html .= '<div class="neon-container mt-5">';
 
-            $html .= '<div class="d-flex justify-content-between align-items-center mb-3">';
+            $html .= '<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">';
             $html .= '<div class="neon-title-container">' . Html::encode($title) . '</div>';
             
             if ($btnAlta) {
@@ -29,7 +29,7 @@ class AppIndexGenericoHelper
             }
             $html .= '</div>';
 
-            $html .= '<div><hr style="border-color: rgba(255, 51, 51, 0.4);"></div>';
+            $html .= '<div><hr style="border-color: rgba(var(--acento-rgb), 0.4);"></div>';
 
             $html .= '<div class="card-body p-0">';
 

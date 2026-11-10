@@ -21,11 +21,11 @@ $items = [
     ],
     [
         'label' => 'Eventos',
-        'url' => ['/site/eventos'],
+        'url' => ['/evento/listado'],
     ],
     [
         'label' => 'Alumnos',
-        'url' => ['/site/alumnos'],
+        'url' => ['/alumno/listado'],
     ],
 
 
@@ -53,8 +53,7 @@ $items = [
             <?php NavBar::begin([
                 'brandLabel' => false,
                 'innerContainerOptions' => ['class' => 'container-fluid px-3 d-flex align-items-center justify-content-between'],
-                'options' => ['class'  => 'navbar navbar-expand-md navbar-dark p-0 w-100'],
-                'togglerContent' => '<span class="navbar-toggler-icon"></span> <span class="ms-2" style="color: #ff3333; text-shadow: 0 0 5px rgba(255,0,0,0.5);">Menú</span>',
+                'options' => ['class'  => 'navbar navbar-expand navbar-dark p-0 w-100'],
             ]); ?>
 
             <?= Nav::widget([

@@ -14,8 +14,7 @@ class NeonButtonWidget extends Widget
 
 public function run()
     {
-        $this->registerCss();
-
+        // Los estilos viven en web/css/site.css (sección "Botones y etiquetas").
         $options = $this->options;
         $cssClass = 'btn-neon-pill ' . ($options['class'] ?? '');
         $options['class'] = trim($cssClass);
@@ -26,12 +25,5 @@ public function run()
         $html .= Html::endTag('a');
 
         return $html;
-    }
-
-    protected function registerCss()
-    {
-        $view = $this->getView();
-        $css = file_get_contents(__DIR__ . '/NeonButtonWidget.css');
-        $view->registerCss($css);
     }
 }

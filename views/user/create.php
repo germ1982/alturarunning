@@ -16,7 +16,7 @@ $this->title = 'Crear Nuevo Usuario';
             <h2 class="neon-title-container"><?= Html::a('<i class="fas fa-reply"></i>', ['index'], ['class' => 'text-decoration-none text-light fs-4', 'title' => 'Volver']) ?>
             <span><?= Html::encode($this->title) ?></span></h2>
         </div>
-        <hr style="border-color: rgba(255, 51, 51, 0.4);">
+        <hr style="border-color: rgba(var(--acento-rgb), 0.4);">
 
         <?php $form = ActiveForm::begin([
             'id' => 'form-user-create',

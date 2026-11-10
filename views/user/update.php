@@ -1,18 +1,14 @@
 <?php
 
-use yii\helpers\Html;
-
 /** @var yii\web\View $this */
 /** @var app\models\User $model */
 
-$this->title = 'Update User: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Editar usuario: ' . $model->username;
 ?>
-<div class="user-update">
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
-
+<div class="user-update row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <?= $this->render('_form', [
+            'model' => $model,
+        ]) ?>
+    </div>
 </div>

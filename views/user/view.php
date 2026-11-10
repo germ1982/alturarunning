@@ -3,22 +3,23 @@
 use yii\widgets\DetailView;
 use yii\helpers\Html;
 
-
+/** @var yii\web\View $this */
 /** @var app\models\User $model */
+
+$this->title = 'Usuario: ' . $model->username;
 ?>
 
-<div class="container-fluid">
-      <div class="row">
-            <div class="col-md-6 border-end">
-                  <h5 class="mb-3 text-primary"><i class="bi bi-person-badge me-2"></i>Datos Personales</h5>
+<div class="neon-container mt-5">
+      <div class="neon-title-container pb-3"><?= Html::encode($this->title) ?></div>
+
+      <div class="row g-4">
+            <div class="col-md-6">
+                  <h5 class="mb-3 text-acento"><i class="bi bi-person-badge me-2"></i>Datos Personales</h5>
                   <?= DetailView::widget([
                         'model' => $model,
-                        'options' => ['class' => 'table table-sm '], // Le sacamos los bordes toscos
+                        'options' => ['class' => 'table table-sm table-stark'],
                         'attributes' => [
-                              [
-                                    'attribute' => 'username',
-                                    'captionOptions' => ['class' => 'fw-bold text-muted', 'style' => 'width: 30%'],
-                              ],
+                              'username',
                               'email:email',
                               'telefono',
                               [
@@ -41,24 +42,26 @@ use yii\helpers\Html;
                   ]) ?>
             </div>
 
-            <div class="col-md-6 ps-4">
-                  <h5 class="mb-3 text-primary"><i class="bi bi-shield-lock me-2"></i>Roles Asignados</h5>
+            <div class="col-md-6">
+                  <h5 class="mb-3 text-acento"><i class="bi bi-shield-lock me-2"></i>Roles Asignados</h5>
 
                   <?php if (!empty($model->roles)): ?>
-                        <div class="d-flex flex-wrap gap-2">
+                        <ul class="list-unstyled mb-0">
                               <?php foreach ($model->roles as $rol): ?>
-                                    <span class="badge border text-dark p-2 px-3 bg-light d-flex align-items-center fw-normal">
+                                    <li class="mb-2">
                                           <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                          <strong class="me-1"><?= Html::encode($rol->nombre) ?>:</strong>
-                                          <span class="text-muted fw-light"><?= Html::encode($rol->descripcion) ?></span>
-                                    </span>
+                                          <strong><?= Html::encode($rol->nombre) ?>:</strong>
+                                          <?= Html::encode($rol->descripcion) ?>
+                                    </li>
                               <?php endforeach; ?>
-                        </div>
+                        </ul>
                   <?php else: ?>
-                        <div class="alert alert-light border text-muted">
-                              <i class="bi bi-person-exclamation me-2"></i>Este usuario no tiene roles asignados.
-                        </div>
+                        <p class="mb-0"><i class="bi bi-person-exclamation me-2"></i>Este usuario no tiene roles asignados.</p>
                   <?php endif; ?>
             </div>
+      </div>
+
+      <div class="text-center mt-3">
+            <?= Html::a('Volver', ['index'], ['class' => 'btn btn-outline-light btn-sm']) ?>
       </div>
 </div>

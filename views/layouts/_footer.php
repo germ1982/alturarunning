@@ -4,7 +4,6 @@ use yii\helpers\Html;
 
 ?>
 
-<style><?php include __DIR__ . '/layout.css'; ?></style>
 
 <footer id="footer">
     <div class="container">

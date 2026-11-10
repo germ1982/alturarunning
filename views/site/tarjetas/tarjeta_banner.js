@@ -14,6 +14,10 @@ var canvasLightning = function (c, cw, ch) {
   };
 
   var _this = this;
+  // Los rayos toman el color del tema activo.
+  var estilos = getComputedStyle(document.documentElement);
+  var acento = estilos.getPropertyValue("--acento").trim() || "#ff3333";
+  var acentoRgb = estilos.getPropertyValue("--acento-rgb").trim() || "255, 51, 51";
   this.c = c;
   this.ctx = c.getContext("2d");
   this.cw = cw;
@@ -74,8 +78,8 @@ var canvasLightning = function (c, cw, ch) {
     while (i--) {
       var light = this.lightning[i];
 
-      this.ctx.strokeStyle = "#ff0033"; // Rojo brillante
-      this.ctx.fillStyle = "#ff0033";
+      this.ctx.strokeStyle = acento;
+      this.ctx.fillStyle = acento;
       this.ctx.shadowColor = "#ffffff"; // Color del neón
       this.ctx.shadowBlur = 25; // Intensidad del resplandor (podes subirlo a 20 o 25 si querés más brillo)
       this.ctx.lineWidth = 1;
@@ -113,12 +117,12 @@ var canvasLightning = function (c, cw, ch) {
 
       if (!light.hasFired) {
         this.ctx.fillStyle =
-          "rgba(252, 12, 12, " + this.rand(4, 12) / 100 + ")";
+          "rgba(" + acentoRgb + ", " + this.rand(4, 12) / 100 + ")";
         this.ctx.fillRect(0, 0, this.cw, this.ch);
       }
 
       if (this.rand(0, 30) == 0) {
-        this.ctx.fillStyle = "rgba(252, 12, 12, " + this.rand(1, 3) / 100 + ")";
+        this.ctx.fillStyle = "rgba(" + acentoRgb + ", " + this.rand(1, 3) / 100 + ")";
         this.ctx.fillRect(0, 0, this.cw, this.ch);
       }
 
@@ -129,7 +133,7 @@ var canvasLightning = function (c, cw, ch) {
   this.lightningTimer = function () {
     this.lightTimeCurrent++;
     if (this.lightTimeCurrent >= this.lightTimeTotal) {
-      var newX = this.rand(100, cw - 100);
+      var newX = this.rand(100, this.cw - 100);
       var newY = 0;
       var createCount = this.rand(1, 3);
       while (createCount--) {
@@ -148,8 +152,8 @@ var canvasLightning = function (c, cw, ch) {
   };
 
   $(window).on("resize", function () {
-    _this.cw = _this.c.width = window.innerWidth;
-    _this.ch = _this.c.height = window.innerHeight;
+    _this.cw = _this.c.width = _this.c.parentElement.clientWidth;
+    _this.ch = _this.c.height = _this.c.parentElement.clientHeight;
   });
 
   this.loop = function () {

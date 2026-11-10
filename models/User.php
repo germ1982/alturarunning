@@ -41,6 +41,47 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
+    public function rules()
+    {
+        return [
+            [['username'], 'required'],
+            [['username'], 'string', 'max' => 255],
+            [['username'], 'unique', 'message' => 'Este usuario ya existe.'],
+            [['email'], 'string', 'max' => 150],
+            [['email'], 'email'],
+            [['email'], 'validarEmailDisponible'],
+            [['telefono'], 'string', 'max' => 30],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Usuario',
+            'email' => 'Correo electrónico',
+            'telefono' => 'Teléfono',
+            'status' => 'Estado',
+        ];
+    }
+
+    public function validarEmailDisponible($attribute)
+    {
+        $enUso = Persona::find()
+            ->where(['email' => $this->$attribute])
+            ->andFilterWhere(['<>', 'idpersona', $this->idpersona])
+            ->exists();
+
+        if ($enUso) {
+            $this->addError($attribute, 'Este email ya está registrado.');
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     //Busca un usuario por ID (solo si está activo).
     public static function findIdentity($id)
     {
@@ -114,15 +155,25 @@ class User extends ActiveRecord implements IdentityInterface
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
     // ---------------------------------------------------------
     //  BEFORE SAVE — Manejo automático de seguridad
     // ---------------------------------------------------------
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            if ($this->persona) {
-                $this->persona->email = $this->email;
-                $this->persona->telefono = $this->telefono;
+            // null significa "no cargado en este modelo": no debe pisar lo que ya tiene la persona.
+            if ($this->persona && ($this->email !== null || $this->telefono !== null)) {
+                if ($this->email !== null) {
+                    $this->persona->email = $this->email ?: null;
+                }
+                if ($this->telefono !== null) {
+                    $this->persona->telefono = $this->telefono ?: null;
+                }
                 $this->persona->save(false);
             }
             return true;

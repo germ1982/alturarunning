@@ -1,54 +1,17 @@
 <?php
-/* @var $this yii\web\View */
+
+/** @var yii\web\View $this */
+
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\GridView;
-use yii\data\ActiveDataProvider;
 
-$this->title = 'Solicitar reseteo de contraseña';
-$this->params['breadcrumbs'][] = $this->title;
-
-// Creamos el DataProvider
-$dataProvider = new ActiveDataProvider([
-    'query' => \app\models\User::find()
-        ->joinWith('roles')
-        ->where(['user_rol.nombre' => ['Administrador', 'Moderador']])
-        ->distinct(),
-]);
+$this->title = 'Recuperar contraseña';
 ?>
-
-<div class="site-about" style="max-width: 900px; margin: 0 auto; font-family: inherit;">
-    
-    <div class="grupos-header mb-4">
-        <img src="<?= Url::to('@web/img/banner_comunidad.jpg')?>" alt="Header Grupos" class="grupos-header__img w-100" style="background: #f0f0f0; object-fit: cover;">
+<div class="site-solicitar-reset row justify-content-center pt-5">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="neon-container text-center" style="padding-left: 1.5rem;">
+            <div class="neon-title-container pb-3"><?= Html::encode($this->title) ?></div>
+            <p>Pedile a tu profesor o a un administrador de la escuela que te genere una contraseña temporal.</p>
+            <?= Html::a('Volver a iniciar sesión', ['site/login'], ['class' => 'btn btn-outline-light btn-sm']) ?>
+        </div>
     </div>
-
-    <h1 style="color: #b8860b; border-bottom: 2px solid #deb887; padding-bottom: 10px; margin-bottom: 25px;"><?= Html::encode($this->title) ?></h1>
-
-    <div class="alert alert-info" style="margin-bottom: 30px;">
-        <p style="margin: 0; font-weight: bold;">Te puedes comunicar con alguno de los administradores o moderadores para solicitar tu reseteo de contraseña.</p>
-    </div>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'summary' => false,
-        'tableOptions' => ['class' => 'table table-bordered table-striped'],
-        'columns' => [
-            'username',
-            'email:email',
-            [
-                'attribute' => 'telefono',
-                'format' => 'raw',
-                'value' => function ($model) {
-                    $num = preg_replace('/[^0-9]/', '', $model->telefono);
-                    $waLink = "https://wa.me/" . (str_starts_with($num, '54') ? $num : '549' . $num);
-                    return Html::a('<i class="bi bi-whatsapp"></i> Contactar', $waLink, [
-                        'target' => '_blank', 
-                        'class' => 'btn btn-success btn-sm'
-                    ]);
-                },
-            ],
-        ],
-    ]); ?>
-
 </div>

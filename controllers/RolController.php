@@ -3,10 +3,27 @@
 namespace app\controllers;
 
 use Yii;
+use app\helpers\UserHelper;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 
 class RolController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'matchCallback' => static fn () => UserHelper::esAdmin(),
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionCrear($nombre = null)
     {
         $nombre = trim($nombre);

@@ -5,28 +5,50 @@ use Yii;
 
 class UserHelper
 {
+    const ROL_ADMIN = 'Administrador';
+    const ROL_PROFESOR = 'Profesor';
+    const ROL_COLABORADOR = 'Colaborador';
+    const ROL_COORDINADOR_EVENTOS = 'Coordinador de Eventos';
+
+    /** Qué roles pueden entrar a cada sección de administración. */
+    const PERMISOS = [
+        'usuarios' => [self::ROL_ADMIN],
+        'contenidos' => [self::ROL_ADMIN, self::ROL_PROFESOR, self::ROL_COLABORADOR],
+        'eventos' => [self::ROL_ADMIN, self::ROL_PROFESOR, self::ROL_COLABORADOR, self::ROL_COORDINADOR_EVENTOS],
+        'alumnos' => [self::ROL_ADMIN, self::ROL_PROFESOR],
+        'profesores' => [self::ROL_ADMIN],
+        'auditorias' => [self::ROL_ADMIN],
+        'aspecto' => [self::ROL_ADMIN],
+    ];
+
     public static function esAdmin(): bool
     {
-        return static::tieneRol(1); // idrol = 1 Administrador
+        return static::tieneRol(self::ROL_ADMIN);
     }
 
-    public static function esModerador(): bool
+    /**
+     * @param string|string[] $nombres uno o varios nombres de rol
+     */
+    public static function tieneRol($nombres): bool
     {
-        return static::tieneRol(4);
+        if (Yii::$app->user->isGuest) {
+            return false;
+        }
+
+        return Yii::$app->user->identity->tieneRol($nombres);
     }
 
-    public static function tieneRol(int $idrol): bool
+    public static function puede(string $permiso): bool
     {
-        if (Yii::$app->user->isGuest) return false;
-        $id = Yii::$app->user->id;
-        return (bool) \app\models\User_usuario_rol::find()
-            ->where(['idusuario' => $id, 'idrol' => $idrol])
-            ->exists();
+        return static::tieneRol(self::PERMISOS[$permiso] ?? []);
     }
 
     public static function puedeEditar($idusuario): bool
     {
-        if (Yii::$app->user->isGuest) return false;
-        return Yii::$app->user->id == $idusuario || static::esAdmin() || static::esModerador();
+        if (Yii::$app->user->isGuest) {
+            return false;
+        }
+
+        return Yii::$app->user->id == $idusuario || static::esAdmin();
     }
 }

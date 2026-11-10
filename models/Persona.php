@@ -37,15 +37,18 @@ class Persona extends ActiveRecord
     public function rules()
     {
         return [
+            [['nombre', 'apellido', 'documento', 'direccion', 'telefono', 'email'], 'trim'],
+            [['fecha_nacimiento', 'direccion', 'telefono', 'email'], 'default', 'value' => null],
             [['nombre', 'apellido', 'documento'], 'required'],
-            [['fecha_nacimiento'], 'safe'],
+            [['fecha_nacimiento'], 'date', 'format' => 'php:Y-m-d', 'message' => 'La fecha no es válida.'],
             [['nombre', 'apellido'], 'string', 'max' => 100],
             [['documento'], 'string', 'max' => 20],
             [['direccion'], 'string', 'max' => 200],
             [['telefono'], 'string', 'max' => 30],
             [['email'], 'string', 'max' => 150],
             [['email'], 'email'],
-            [['documento'], 'unique'],
+            [['documento'], 'unique', 'message' => 'Este documento ya está registrado.'],
+            [['email'], 'unique', 'message' => 'Este email ya está registrado.'],
         ];
     }
 
@@ -72,5 +75,29 @@ class Persona extends ActiveRecord
     public function getUsers()
     {
         return $this->hasMany(User::class, ['idpersona' => 'idpersona']);
+    }
+
+    public function getFotoPrincipal()
+    {
+        return $this->hasOne(PersonaFoto::class, ['idpersona' => 'idpersona'])
+            ->andOnCondition(['es_principal' => 1]);
+    }
+
+    public function getObjetivosDesarrollo()
+    {
+        return $this->hasMany(ObjetivoDesarrollo::class, ['idpersona' => 'idpersona'])
+            ->orderBy(['idobjetivo' => SORT_ASC]);
+    }
+
+    public function getDocumentacion()
+    {
+        return $this->hasMany(PersonaDocumentacion::class, ['idpersona' => 'idpersona'])
+            ->with('tipo')
+            ->orderBy(['iddocumentacion' => SORT_DESC]);
+    }
+
+    public function getNombreCompleto(): string
+    {
+        return $this->nombre . ' ' . $this->apellido;
     }
 }

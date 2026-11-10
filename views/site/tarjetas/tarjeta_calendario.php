@@ -2,6 +2,7 @@
 
 use app\components\CardWidget;
 use app\models\ConstantesGlobales;
+use app\models\DatoSistema;
 use yii\helpers\Html;
 
 $calendario = (new \yii\db\Query())
@@ -29,8 +30,8 @@ foreach ($instructores as $inst) {
     $htmlInstructores .= '</div>';
 
     $htmlInstructores .= '<div>';
-    $htmlInstructores .= '<span class="d-block" style="font-size: 0.75rem; line-height: 1;"><span class="text-danger fw-bold">PROFESOR:</span> <span class="text-white">' . Html::encode($inst['nombre'] . ' ' . $inst['apellido']) . '</span></span>';
-    $htmlInstructores .= '<span class="d-block" style="font-size: 0.6rem;"><span class="text-danger">Especialidad:</span> <span class="text-warning">' . Html::encode($inst['especialidad']) . '</span></span>';
+    $htmlInstructores .= '<span class="d-block" style="font-size: 0.75rem; line-height: 1;"><span class="text-acento fw-bold">PROFESOR:</span> <span class="text-white">' . Html::encode($inst['nombre'] . ' ' . $inst['apellido']) . '</span></span>';
+    $htmlInstructores .= '<span class="d-block" style="font-size: 0.75rem;"><span class="text-acento">Especialidad:</span> <span class="text-warning">' . Html::encode($inst['especialidad']) . '</span></span>';
     $htmlInstructores .= '</div>';
     $htmlInstructores .= '</div>';
 }
@@ -56,8 +57,7 @@ foreach ($calendario as $row) {
 }
 
 // Filtramos primero los lugares que tienen datos para saber cuál es el último
-ConstantesGlobales::LUGARES;
-$lugaresConDatos = array_filter(ConstantesGlobales::LUGARES, function ($idlugar) use ($datos) {
+$lugaresConDatos = array_filter(DatoSistema::opciones(ConstantesGlobales::TIPO_LUGAR_ENTRENAMIENTO), function ($idlugar) use ($datos) {
     return isset($datos[$idlugar]);
 }, ARRAY_FILTER_USE_KEY);
 
@@ -86,7 +86,7 @@ foreach ($lugaresConDatos as $idlugar => $nombreLugar) {
         // Bajamos el min-width y max-width para que entren cómodos al menos 3 o 4 por línea en el celu
         $htmlContent .= '<div class="px-1 py-1" style="min-width: 75px; flex: 1 1 auto; max-width: 110px;">';
         // Día arriba del horario
-        $htmlContent .= '<div class="text-danger fw-bold mb-1" style="font-size: 0.65rem;">' . $nombreDia . '</div>';
+        $htmlContent .= '<div class="text-acento fw-bold mb-1" style="font-size: 0.75rem;">' . $nombreDia . '</div>';
 
         foreach ($datos[$idlugar][$diaId] as $horario => $modalidades) {
             $htmlContent .= '<div class="lh-sm mb-1">';
@@ -98,7 +98,7 @@ foreach ($lugaresConDatos as $idlugar => $nombreLugar) {
                 $textoModalidad = $modalidades[0];
             }
 
-            $htmlContent .= '<span class="text-warning" style="font-size: 0.55rem;">(' . Html::encode($textoModalidad) . ')</span>';
+            $htmlContent .= '<span class="text-warning" style="font-size: 0.7rem;">(' . Html::encode($textoModalidad) . ')</span>';
             $htmlContent .= '</div>';
         }
 
@@ -109,49 +109,6 @@ foreach ($lugaresConDatos as $idlugar => $nombreLugar) {
     $htmlContent .= '</div>'; // fin row del lugar
 }
 ?>
-<style>
-    .bg-dark {
-        --bs-bg-opacity: 1;
-        background-color: transparent !important;
-    }
-
-    /* Contenedor circular con borde neón rojo */
-    .profesor-avatar-container {
-        position: relative;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 2px solid #dc3545;
-        box-shadow: 0 0 8px rgba(220, 53, 69, 0.8), inset 0 0 4px rgba(220, 53, 69, 0.5);
-        flex-shrink: 0;
-        cursor: pointer;
-    }
-
-    /* Imagen normal dentro del círculo */
-    .profesor-avatar {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
-        transform-origin: center center; /* Fuerza a que el punto de escala sea el centro exacto */
-    }
-
-    /* Al hacer hover, se eleva y se agranda al 200% desde el centro sin desplazarse raro */
-    .profesor-avatar-container:hover .profesor-avatar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        transform: scale(2); /* Se expande exactamente al doble */
-        z-index: 1000;
-        border-radius: 50%;
-        box-shadow: 0 0 15px rgba(220, 53, 69, 1), 0 0 25px rgba(220, 53, 69, 0.8);
-        border: 2px solid #dc3545;
-        background-color: #000;
-    }
-</style>
 
 <?= CardWidget::widget([
     'title' => 'Información Acerca de los Entrenamientos',

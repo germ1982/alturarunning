@@ -2,9 +2,12 @@
 
 namespace app\controllers;
 
+use app\helpers\UserHelper;
+use app\models\SistemaLog;
 use app\models\User_rol;
 use app\models\User_rolSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,10 +25,20 @@ class User_rolController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'matchCallback' => static fn () => UserHelper::esAdmin(),
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'guardar_rol' => ['POST'],
                     ],
                 ],
             ]
@@ -72,6 +85,8 @@ class User_rolController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                SistemaLog::registrar(SistemaLog::MODULO_ROLES, SistemaLog::ACCION_CREATE, $model->idrol, 'Se creó el rol ' . $model->nombre);
+
                 return $this->redirect(['view', 'idrol' => $model->idrol]);
             }
         } else {
@@ -94,7 +109,11 @@ class User_rolController extends Controller
     {
         $model = $this->findModel($idrol);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->validate()) {
+            $cambios = SistemaLog::diferencias($model, ['nombre' => 'Nombre', 'descripcion' => 'Descripción', 'activo' => 'Activo']);
+            $model->save(false);
+            SistemaLog::registrar(SistemaLog::MODULO_ROLES, SistemaLog::ACCION_UPDATE, $model->idrol, SistemaLog::conDetalle('Se editó el rol ' . $model->nombre, $cambios));
+
             return $this->redirect(['view', 'idrol' => $model->idrol]);
         }
 
@@ -112,7 +131,9 @@ class User_rolController extends Controller
      */
     public function actionDelete($idrol)
     {
-        $this->findModel($idrol)->delete();
+        $model = $this->findModel($idrol);
+        $model->delete();
+        SistemaLog::registrar(SistemaLog::MODULO_ROLES, SistemaLog::ACCION_DELETE, (int) $idrol, 'Se eliminó el rol ' . $model->nombre);
 
         return $this->redirect(['index']);
     }
@@ -142,6 +163,8 @@ class User_rolController extends Controller
         $model->descripcion = Yii::$app->request->post('descripcion');
 
         if ($model->save()) {
+            SistemaLog::registrar(SistemaLog::MODULO_ROLES, SistemaLog::ACCION_CREATE, $model->idrol, 'Se creó el rol ' . $model->nombre);
+
             return [
                 'ok' => true,
                 'idrol' => $model->idrol
