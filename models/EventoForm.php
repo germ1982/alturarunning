@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\helpers\ImagenHelper;
 use Yii;
 use yii\base\Model;
 use yii\helpers\FileHelper;
@@ -454,6 +455,8 @@ class EventoForm extends Model
         if (!$archivo->saveAs(Yii::getAlias('@webroot/' . $ruta))) {
             throw new \RuntimeException('No se pudo guardar el archivo ' . $archivo->name);
         }
+
+        ImagenHelper::optimizar(Yii::getAlias('@webroot/' . $ruta), ImagenHelper::ANCHO_GENERAL);
 
         return $ruta;
     }

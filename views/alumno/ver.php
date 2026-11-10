@@ -134,7 +134,7 @@ foreach ($objetivos as $desarrollo) {
                 </div>
                 <div class="col-12 col-md-4">
                     <label class="form-label mb-0 w-100">Archivo (PDF o imagen, hasta 10 MB)
-                        <input type="file" name="archivo" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png,.webp" required>
+                        <input type="file" data-comprimir="2000" data-calidad="0.88" name="archivo" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png,.webp" required>
                     </label>
                 </div>
                 <div class="col-12 col-md-3">

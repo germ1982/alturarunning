@@ -2,6 +2,7 @@
 
 use app\components\CardWidget;
 use app\models\ConstantesGlobales;
+use app\models\DatoSistema;
 use yii\helpers\Html;
 
 $calendario = (new \yii\db\Query())
@@ -56,8 +57,7 @@ foreach ($calendario as $row) {
 }
 
 // Filtramos primero los lugares que tienen datos para saber cuál es el último
-ConstantesGlobales::LUGARES;
-$lugaresConDatos = array_filter(ConstantesGlobales::LUGARES, function ($idlugar) use ($datos) {
+$lugaresConDatos = array_filter(DatoSistema::opciones(ConstantesGlobales::TIPO_LUGAR_ENTRENAMIENTO), function ($idlugar) use ($datos) {
     return isset($datos[$idlugar]);
 }, ARRAY_FILTER_USE_KEY);
 

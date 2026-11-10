@@ -30,11 +30,13 @@ class SistemaLog extends ActiveRecord
     const MODULO_OBJETIVOS = 14;
     const MODULO_DOCUMENTACION = 15;
     const MODULO_ROLES = 16;
+    const MODULO_PROFESORES = 17;
 
     const MODULOS = [
         self::MODULO_USUARIOS => 'Usuarios',
         self::MODULO_ROLES => 'Roles',
         self::MODULO_ALUMNOS => 'Alumnos',
+        self::MODULO_PROFESORES => 'Profesores',
         self::MODULO_CUOTAS => 'Cuotas',
         self::MODULO_OBJETIVOS => 'Objetivos',
         self::MODULO_DOCUMENTACION => 'Documentación',

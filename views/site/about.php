@@ -18,8 +18,15 @@ $htmlContent = '';
 
 foreach ($parrafos as $parrafo) {
     $htmlContent .= '<h5 class="text-acento fw-bold mb-2">' . Html::encode($parrafo['dato']) . '</h5>
-                    <p class="mb-4">' . Html::encode($parrafo['observacion']) . '</p>';
+                    <p class="mb-4">' . nl2br(Html::encode($parrafo['observacion'])) . '</p>';
 }
+
+// La imagen se cambia en Administrar > Contenidos > Acerca de.
+$imagen = (new \yii\db\Query())
+    ->select('dato')
+    ->from('dato_sistema')
+    ->where(['idtipo' => ConstantesGlobales::ABOUT_IMAGEN])
+    ->scalar();
 ?>
 <div class="site-about mt-5">
     <div class="row g-3 mb-5 justify-content-center">
@@ -28,13 +35,11 @@ foreach ($parrafos as $parrafo) {
                 'title' => 'Acerca de Altura Running',
                 'content' => '
                     <div class="text-center py-3">
-                        <div class="mb-4">
-                            ' . Html::img('@web/images/sistema/about/about.jpg', [
+                        ' . ($imagen ? '<div class="mb-4">' . Html::img('@web/images/sistema/about/' . $imagen, [
                                 'alt' => 'Altura Running',
                                 'class' => 'img-fluid rounded',
                                 'style' => 'max-height: 250px; object-fit: cover;'
-                            ]) . '
-                        </div>
+                            ]) . '</div>' : '') . '
                         <div class="text-start text-white px-3" style="font-size: 0.9rem; line-height: 1.6;">
                             ' . $htmlContent . '
                         </div>

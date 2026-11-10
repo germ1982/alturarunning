@@ -63,7 +63,7 @@ $volver = $evento->isNewRecord ? ['listado'] : ['ver', 'id' => $evento->idevento
             </div>
         <?php endif; ?>
         <label class="form-label" for="fotos-nuevas">Agregar fotos</label>
-        <input type="file" id="fotos-nuevas" name="fotos_nuevas[]" class="form-control" accept=".jpg,.jpeg,.png,.webp" multiple>
+        <input type="file" data-comprimir="1280" id="fotos-nuevas" name="fotos_nuevas[]" class="form-control" accept=".jpg,.jpeg,.png,.webp" multiple>
         <div class="form-text">JPG, PNG o WEBP, hasta 8 MB cada una. Si no hay principal, se usa la primera.</div>
     </section>
 

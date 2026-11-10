@@ -77,7 +77,7 @@ $campoId = 'desafio-' . $clave . '-';
         <?php endif; ?>
 
         <label class="form-label" for="<?= $campoId ?>fotos">Agregar fotos del desafío</label>
-        <input type="file" id="<?= $campoId ?>fotos" name="desafio_fotos[<?= $clave ?>][]" class="form-control mb-3" accept=".jpg,.jpeg,.png,.webp" multiple>
+        <input type="file" data-comprimir="1280" id="<?= $campoId ?>fotos" name="desafio_fotos[<?= $clave ?>][]" class="form-control mb-3" accept=".jpg,.jpeg,.png,.webp" multiple>
 
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
             <strong>Inscriptos</strong>

@@ -241,9 +241,9 @@ class SiteController extends Controller
     {
         return $this->redirect(['evento/index']);
     }
-    public function actionGestionar_contenidos(): string
+    public function actionGestionar_contenidos(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['contenido/index']);
     }
 
     public function actionGestionar_usuarios()
@@ -251,9 +251,9 @@ class SiteController extends Controller
         return $this->redirect(['user/index']);
     }
 
-    public function actionGestionar_profesores(): string
+    public function actionGestionar_profesores(): Response
     {
-        return $this->render('en_construccion');
+        return $this->redirect(['profesor/index']);
     }
 
 

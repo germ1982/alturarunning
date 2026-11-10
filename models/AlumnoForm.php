@@ -4,8 +4,6 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use yii\helpers\FileHelper;
-use yii\validators\ImageValidator;
 use yii\web\UploadedFile;
 
 /**
@@ -16,7 +14,6 @@ use yii\web\UploadedFile;
  */
 class AlumnoForm extends Model
 {
-    private const CARPETA_FOTOS = 'images/personas';
     private const CLAVE_VALIDA = '/^n?\d+$/';
 
     public Alumno $alumno;
@@ -93,13 +90,13 @@ class AlumnoForm extends Model
             $transaccion->rollBack();
 
             if ($escrito !== null) {
-                self::borrarArchivo($escrito);
+                PersonaFoto::borrarArchivo($escrito);
             }
 
             throw $e;
         }
 
-        array_walk($aBorrar, [self::class, 'borrarArchivo']);
+        array_walk($aBorrar, [PersonaFoto::class, 'borrarArchivo']);
 
         return true;
     }
@@ -277,13 +274,9 @@ class AlumnoForm extends Model
         $correcto = $this->validarFilas($this->pagos, 'idcuota', 'Esta cuota ya está cargada para el alumno.') && $correcto;
         $correcto = $this->validarFilas($this->objetivos, 'idobjetivo', 'Este objetivo ya está asignado al alumno.') && $correcto;
 
-        if ($this->archivoFoto !== null) {
-            $validador = new ImageValidator(['extensions' => ['jpg', 'jpeg', 'png', 'webp'], 'maxSize' => 8 * 1024 * 1024]);
-
-            if (!$validador->validate($this->archivoFoto, $error)) {
-                $this->addError('general', $this->archivoFoto->name . ': ' . $error);
-                $correcto = false;
-            }
+        if ($this->archivoFoto !== null && !PersonaFoto::validar($this->archivoFoto, $error)) {
+            $this->addError('general', $error);
+            $correcto = false;
         }
 
         return $correcto;
@@ -315,33 +308,7 @@ class AlumnoForm extends Model
 
     private function guardarFoto(?string &$escrito, array &$aBorrar): void
     {
-        if ($this->archivoFoto === null && !$this->quitarFoto) {
-            return;
-        }
-
-        foreach (PersonaFoto::findAll(['idpersona' => $this->persona->idpersona, 'es_principal' => 1]) as $anterior) {
-            $aBorrar[] = $anterior->ruta;
-            $anterior->delete();
-        }
-
-        if ($this->archivoFoto === null) {
-            return;
-        }
-
-        FileHelper::createDirectory(Yii::getAlias('@webroot/' . self::CARPETA_FOTOS));
-        $nombre = Yii::$app->security->generateRandomString(24) . '.' . strtolower($this->archivoFoto->extension);
-
-        if (!$this->archivoFoto->saveAs(Yii::getAlias('@webroot/' . self::CARPETA_FOTOS . '/' . $nombre))) {
-            throw new \RuntimeException('No se pudo guardar la foto.');
-        }
-
-        $escrito = $nombre;
-
-        (new PersonaFoto([
-            'idpersona' => $this->persona->idpersona,
-            'ruta' => $nombre,
-            'es_principal' => 1,
-        ]))->save(false);
+        PersonaFoto::reemplazarPrincipal($this->persona->idpersona, $this->archivoFoto, $this->quitarFoto, $escrito, $aBorrar);
     }
 
     private function guardarPagos(): void
@@ -374,13 +341,6 @@ class AlumnoForm extends Model
                 $desarrollo->idpersona = $this->persona->idpersona;
                 $desarrollo->save(false);
             }
-        }
-    }
-
-    private static function borrarArchivo($nombre): void
-    {
-        if ($nombre !== '' && basename((string) $nombre) === $nombre) {
-            @unlink(Yii::getAlias('@webroot/' . self::CARPETA_FOTOS . '/' . $nombre));
         }
     }
 }

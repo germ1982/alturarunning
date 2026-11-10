@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\helpers\ImagenHelper;
 use app\helpers\UserHelper;
 use app\models\Alumno;
 use app\models\Persona;
@@ -72,6 +73,9 @@ class DocumentacionController extends Controller
         if (!$archivo->saveAs($documento->getRutaArchivo())) {
             throw new \RuntimeException('No se pudo guardar el archivo.');
         }
+
+        // Las fotos de documentos se achican con más calidad para que se lean bien; los PDF quedan igual.
+        ImagenHelper::optimizar($documento->getRutaArchivo(), ImagenHelper::ANCHO_DOCUMENTO, ImagenHelper::CALIDAD_DOCUMENTO);
 
         try {
             $documento->save(false);

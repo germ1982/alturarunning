@@ -77,7 +77,7 @@ $fotoActual = $esNuevo ? null : $persona->fotoPrincipal;
             </div>
         <?php endif; ?>
         <label class="form-label" for="foto-nueva"><?= $fotoActual !== null ? 'Reemplazar foto' : 'Subir foto' ?></label>
-        <input type="file" id="foto-nueva" name="foto_nueva" class="form-control" accept=".jpg,.jpeg,.png,.webp">
+        <input type="file" data-comprimir="600" id="foto-nueva" name="foto_nueva" class="form-control" accept=".jpg,.jpeg,.png,.webp">
         <div class="form-text">JPG, PNG o WEBP, hasta 8 MB.</div>
     </section>
 

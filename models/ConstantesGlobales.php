@@ -13,6 +13,8 @@ class ConstantesGlobales extends Component
     const ABOUT_IMAGEN = 5;
     const ABOUT_PARRAFO = 6;
     const TIPO_TEMA_SITIO = 7;
+    const TIPO_DESTACADO = 8;
+    const TIPO_LUGAR_ENTRENAMIENTO = 9;
 
     const DOMINGO = 1;
     const LUNES = 2;
@@ -60,22 +62,8 @@ class ConstantesGlobales extends Component
         self::DICIEMBRE => 'Diciembre',
     ];
 
-    const PARQUE_DE_LOS_DINOSAURIOS = 1;
-    const PARQUE_NORTE = 2;
-    const PISTA_ATLETISMO_NEUQUEN = 3;
-    const ESTACION_TRANSFORMADORA_ALLEN = 4;
-    const PISTA_ATLETISMO_ALLEN = 5;
-    const LETRAS_PARQUE_INTEGRACION = 6;
-
-
-    const LUGARES = [
-        self::PARQUE_DE_LOS_DINOSAURIOS => 'Parque de los Dinosaurios Neuquen',
-        self::PARQUE_NORTE => 'Parque Norte Neuquen',
-        self::PISTA_ATLETISMO_NEUQUEN => 'Pista de Atletismo Neuquén',
-        self::ESTACION_TRANSFORMADORA_ALLEN => 'Estación Transformadora Allen',
-        self::PISTA_ATLETISMO_ALLEN => 'Pista de Atletismo Allen',
-        self::LETRAS_PARQUE_INTEGRACION => 'Letras En Parque Integración de Allen',
-    ];
+    // Los lugares de entrenamiento se cargan en Administrar > Contenidos
+    // (dato_sistema de tipo TIPO_LUGAR_ENTRENAMIENTO).
 
     const EVENTO_INACTIVO = 0;
     const EVENTO_ACTIVO = 1;

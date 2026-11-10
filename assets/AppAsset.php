@@ -30,6 +30,7 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/color-mode.js',
+        'js/comprimir-imagenes.js',
     ];
     public $jsOptions = [
         'position' => View::POS_HEAD,
