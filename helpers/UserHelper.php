@@ -18,6 +18,7 @@ class UserHelper
         'alumnos' => [self::ROL_ADMIN, self::ROL_PROFESOR],
         'profesores' => [self::ROL_ADMIN],
         'auditorias' => [self::ROL_ADMIN],
+        'aspecto' => [self::ROL_ADMIN],
     ];
 
     public static function esAdmin(): bool

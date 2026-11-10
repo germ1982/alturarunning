@@ -43,6 +43,16 @@ $secciones = [
                         ]); ?>
                     </div>
 
+                    <?php if (UserHelper::puede('aspecto')): ?>
+                        <div class="my-2">
+                            <?= NeonButtonWidget::widget([
+                                'label' => 'Aspecto',
+                                'url' => Url::to(['site/aspecto']),
+                                'icon' => '<i class="fas fa-palette"></i>',
+                            ]); ?>
+                        </div>
+                    <?php endif; ?>
+
                     <?php if (UserHelper::puede('auditorias')): ?>
                         <div class="my-2">
                             <?= NeonButtonWidget::widget([

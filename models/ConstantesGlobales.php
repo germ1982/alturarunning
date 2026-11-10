@@ -12,6 +12,7 @@ class ConstantesGlobales extends Component
     const TIPO_FRASES_DINO = 4;
     const ABOUT_IMAGEN = 5;
     const ABOUT_PARRAFO = 6;
+    const TIPO_TEMA_SITIO = 7;
 
     const DOMINGO = 1;
     const LUNES = 2;

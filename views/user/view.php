@@ -14,7 +14,7 @@ $this->title = 'Usuario: ' . $model->username;
 
       <div class="row g-4">
             <div class="col-md-6">
-                  <h5 class="mb-3 text-danger"><i class="bi bi-person-badge me-2"></i>Datos Personales</h5>
+                  <h5 class="mb-3 text-acento"><i class="bi bi-person-badge me-2"></i>Datos Personales</h5>
                   <?= DetailView::widget([
                         'model' => $model,
                         'options' => ['class' => 'table table-sm table-stark'],
@@ -43,7 +43,7 @@ $this->title = 'Usuario: ' . $model->username;
             </div>
 
             <div class="col-md-6">
-                  <h5 class="mb-3 text-danger"><i class="bi bi-shield-lock me-2"></i>Roles Asignados</h5>
+                  <h5 class="mb-3 text-acento"><i class="bi bi-shield-lock me-2"></i>Roles Asignados</h5>
 
                   <?php if (!empty($model->roles)): ?>
                         <ul class="list-unstyled mb-0">

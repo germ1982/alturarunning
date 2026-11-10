@@ -14,7 +14,6 @@ use app\models\EventoDesafio;
 use yii\helpers\Html;
 
 $this->title = $evento->titulo;
-$this->registerCss(file_get_contents(__DIR__ . '/evento.css'));
 
 $fotos = $evento->fotos;
 $portada = $evento->portada;
@@ -46,14 +45,14 @@ $coloresDificultad = [
                 <?php endif; ?>
             </div>
             <div class="col-12 col-md-7">
-                <p class="mb-2"><i class="bi bi-calendar-event text-danger me-2"></i><?= $evento->getFechaLarga() ?>
-                    <span class="badge ms-1 <?= $evento->esPasado() ? 'bg-secondary' : 'bg-danger' ?>"><?= $evento->esPasado() ? 'Realizado' : 'Próximo' ?></span>
+                <p class="mb-2"><i class="bi bi-calendar-event text-acento me-2"></i><?= $evento->getFechaLarga() ?>
+                    <span class="badge ms-1 <?= $evento->esPasado() ? 'bg-secondary' : 'bg-acento' ?>"><?= $evento->esPasado() ? 'Realizado' : 'Próximo' ?></span>
                     <?php if ($evento->estado != ConstantesGlobales::EVENTO_ACTIVO): ?>
                         <span class="badge bg-warning text-dark">Inactivo</span>
                     <?php endif; ?>
                 </p>
                 <?php if ($evento->cupo !== null): ?>
-                    <p class="mb-2"><i class="bi bi-people text-danger me-2"></i>Cupo: <?= (int) $evento->cupo ?>
+                    <p class="mb-2"><i class="bi bi-people text-acento me-2"></i>Cupo: <?= (int) $evento->cupo ?>
                         <?php if (!$evento->esPasado()): ?>
                             <span class="badge ms-1 <?= $lugaresDisponibles > 0 ? 'bg-success' : 'bg-secondary' ?>">
                                 <?= $lugaresDisponibles > 0 ? $lugaresDisponibles . ' lugares disponibles' : 'Cupo completo' ?>
@@ -62,10 +61,10 @@ $coloresDificultad = [
                     </p>
                 <?php endif; ?>
                 <?php if ($evento->contacto): ?>
-                    <p class="mb-2"><i class="bi bi-chat-dots text-danger me-2"></i><?= Html::encode($evento->contacto) ?></p>
+                    <p class="mb-2"><i class="bi bi-chat-dots text-acento me-2"></i><?= Html::encode($evento->contacto) ?></p>
                 <?php endif; ?>
                 <?php if ($esEnlace): ?>
-                    <p class="mb-2"><i class="bi bi-link-45deg text-danger me-2"></i><?= Html::a('Más información', $evento->link, ['target' => '_blank', 'rel' => 'noopener', 'class' => 'text-decoration-underline']) ?></p>
+                    <p class="mb-2"><i class="bi bi-link-45deg text-acento me-2"></i><?= Html::a('Más información', $evento->link, ['target' => '_blank', 'rel' => 'noopener', 'class' => 'text-decoration-underline']) ?></p>
                 <?php endif; ?>
                 <?php if ($evento->descripcion): ?>
                     <p class="mb-0 mt-3"><?= nl2br(Html::encode($evento->descripcion)) ?></p>

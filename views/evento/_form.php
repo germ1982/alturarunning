@@ -10,7 +10,6 @@ use app\models\EventoInscripcion;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 
-$this->registerCss(file_get_contents(__DIR__ . '/evento.css'));
 $this->registerJs(file_get_contents(__DIR__ . '/_form.js'));
 
 $evento = $modelo->evento;

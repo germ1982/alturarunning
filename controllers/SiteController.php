@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use Yii;
+use app\helpers\TemaHelper;
 use app\helpers\UserHelper;
 use app\models\ContactForm;
 use app\models\LoginForm;
@@ -48,6 +49,7 @@ class SiteController extends Controller
                     'gestionar_eventos',
                     'gestionar_alumnos',
                     'gestionar_profesores',
+                    'aspecto',
                 ],
                 'rules' => [
                     [
@@ -60,6 +62,7 @@ class SiteController extends Controller
                     $this->reglaPermiso('gestionar_eventos', 'eventos'),
                     $this->reglaPermiso('gestionar_alumnos', 'alumnos'),
                     $this->reglaPermiso('gestionar_profesores', 'profesores'),
+                    $this->reglaPermiso('aspecto', 'aspecto'),
                 ],
             ],
             'verbs' => [
@@ -253,6 +256,33 @@ class SiteController extends Controller
         return $this->render('en_construccion');
     }
 
+
+    /**
+     * Elegir el tema visual de todo el sitio.
+     */
+    public function actionAspecto()
+    {
+        $actual = TemaHelper::actual();
+        $elegido = (string) $this->request->post('tema');
+
+        if ($this->request->isPost && isset(TemaHelper::TEMAS[$elegido])) {
+            if ($elegido !== $actual) {
+                TemaHelper::guardar($elegido);
+                SistemaLog::registrar(
+                    SistemaLog::MODULO_DATOS,
+                    SistemaLog::ACCION_UPDATE,
+                    null,
+                    'Se cambió el aspecto del sitio: ' . TemaHelper::nombre($actual) . ' → ' . TemaHelper::nombre($elegido)
+                );
+            }
+
+            Yii::$app->session->setFlash('success', 'El sitio ahora usa el tema ' . TemaHelper::nombre($elegido) . '.');
+
+            return $this->redirect(['aspecto']);
+        }
+
+        return $this->render('aspecto', ['actual' => $actual]);
+    }
 
     public function actionRegistro()
     {

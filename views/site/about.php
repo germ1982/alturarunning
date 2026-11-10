@@ -17,7 +17,7 @@ $parrafos = (new \yii\db\Query())
 $htmlContent = '';
 
 foreach ($parrafos as $parrafo) {
-    $htmlContent .= '<h5 class="text-danger fw-bold mb-2">' . Html::encode($parrafo['dato']) . '</h5>
+    $htmlContent .= '<h5 class="text-acento fw-bold mb-2">' . Html::encode($parrafo['dato']) . '</h5>
                     <p class="mb-4">' . Html::encode($parrafo['observacion']) . '</p>';
 }
 ?>

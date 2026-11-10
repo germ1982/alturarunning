@@ -14,9 +14,7 @@ class CardWidget extends Widget
 
     public function run()
     {
-        // Registra el CSS automáticamente cuando se llama al widget
-        $this->registerCss();
-
+        // Los estilos viven en web/css/site.css (sección "Tarjetas").
         $cssClass = 'card card-generica h-100 ' . ($this->options['class'] ?? '');
         
         $html = '<div class="' . Html::encode($cssClass) . '">';
@@ -34,12 +32,5 @@ class CardWidget extends Widget
         $html .= '</div>';
 
         return $html;
-    }
-
-    protected function registerCss()
-    {
-        $view = $this->getView();
-        $css = file_get_contents(__DIR__ . '/CardWidget.css');
-        $view->registerCss($css);
     }
 }

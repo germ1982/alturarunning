@@ -12,7 +12,6 @@ use app\models\ObjetivoDesarrollo;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 
-$this->registerCss(file_get_contents(__DIR__ . '/../evento/evento.css'));
 $this->registerJs(file_get_contents(__DIR__ . '/_form.js'));
 
 $alumno = $modelo->alumno;

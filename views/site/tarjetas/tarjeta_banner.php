@@ -10,10 +10,6 @@ $imagenes = (new \yii\db\Query())
     ->column();
 ?>
 
-<style>
-    <?php include __DIR__ . '/tarjeta_banner.css'; ?>
-</style>
-
 <div class="diagonal-split-banner position-relative overflow-hidden">
     <canvas id="Rayos" class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 2; pointer-events: none;"></canvas>
 

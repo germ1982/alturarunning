@@ -46,7 +46,7 @@ $this->title = 'Registro de auditoría Nº ' . $model->id;
         </div>
 
         <div class="col-12 col-lg-7">
-            <h5 class="text-danger mb-2"><i class="bi bi-file-text me-2"></i>Descripción</h5>
+            <h5 class="text-acento mb-2"><i class="bi bi-file-text me-2"></i>Descripción</h5>
             <div style="white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6;"><?= Html::encode($model->descripcion) ?></div>
         </div>
     </div>

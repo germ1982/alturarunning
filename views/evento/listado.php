@@ -9,7 +9,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = 'Eventos';
-$this->registerCss(file_get_contents(__DIR__ . '/evento.css'));
 $this->registerJs(file_get_contents(__DIR__ . '/listado.js'));
 ?>
 <div class="evento-listado mt-5">
@@ -47,7 +46,7 @@ $this->registerJs(file_get_contents(__DIR__ . '/listado.js'));
                         <?php elseif ($evento->esPasado()): ?>
                             <span class="badge bg-secondary">Realizado</span>
                         <?php else: ?>
-                            <span class="badge bg-danger">Próximo</span>
+                            <span class="badge bg-acento">Próximo</span>
                         <?php endif; ?>
                         <?php if ($puedeGestionar && $evento->getSolicitudesPendientes() > 0): ?>
                             <span class="badge bg-warning text-dark"><?= $evento->getSolicitudesPendientes() ?> solicitudes</span>

@@ -17,7 +17,6 @@ use yii\helpers\Html;
 $persona = $alumno->persona;
 $foto = $persona->fotoPrincipal;
 $this->title = $persona->getNombreCompleto();
-$this->registerCss(file_get_contents(__DIR__ . '/../evento/evento.css'));
 
 $puntos = 0;
 
@@ -46,16 +45,16 @@ foreach ($objetivos as $desarrollo) {
                 <div class="inscripto-sin-foto" style="width: 110px; height: 110px; font-size: 3rem;"><i class="bi bi-person"></i></div>
             <?php endif; ?>
             <div style="min-width: 0;">
-                <p class="mb-1"><i class="bi bi-activity text-danger me-2"></i><?= Html::encode($alumno->getRolTexto()) ?></p>
+                <p class="mb-1"><i class="bi bi-activity text-acento me-2"></i><?= Html::encode($alumno->getRolTexto()) ?></p>
                 <?php if ($verPrivado): ?>
-                    <p class="mb-1"><i class="bi bi-flag text-danger me-2"></i><?= Html::encode($alumno->getEstadoTexto()) ?></p>
+                    <p class="mb-1"><i class="bi bi-flag text-acento me-2"></i><?= Html::encode($alumno->getEstadoTexto()) ?></p>
                     <?php if ($persona->telefono): ?>
-                        <p class="mb-1"><i class="bi bi-telephone text-danger me-2"></i><?= Html::encode($persona->telefono) ?></p>
+                        <p class="mb-1"><i class="bi bi-telephone text-acento me-2"></i><?= Html::encode($persona->telefono) ?></p>
                     <?php endif; ?>
                     <?php if ($persona->email): ?>
-                        <p class="mb-1" style="overflow-wrap: anywhere;"><i class="bi bi-envelope text-danger me-2"></i><?= Html::encode($persona->email) ?></p>
+                        <p class="mb-1" style="overflow-wrap: anywhere;"><i class="bi bi-envelope text-acento me-2"></i><?= Html::encode($persona->email) ?></p>
                     <?php endif; ?>
-                    <p class="mb-0"><i class="bi bi-trophy text-danger me-2"></i><?= $puntos ?> puntos · <?= $alumno->getCuotasAdeudadas() ?> cuotas sin saldar</p>
+                    <p class="mb-0"><i class="bi bi-trophy text-acento me-2"></i><?= $puntos ?> puntos · <?= $alumno->getCuotasAdeudadas() ?> cuotas sin saldar</p>
                 <?php endif; ?>
             </div>
         </div>

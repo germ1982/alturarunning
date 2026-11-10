@@ -10,7 +10,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->title = 'Alumnos';
-$this->registerCss(file_get_contents(__DIR__ . '/../evento/evento.css'));
 $this->registerJs(file_get_contents(__DIR__ . '/../evento/listado.js'));
 
 $coloresEstado = [
@@ -64,7 +63,7 @@ $idPropio = (int) ($propio->idalumno ?? 0);
                                 <span class="badge bg-warning text-dark">Debe <?= $alumno->getCuotasAdeudadas() ?></span>
                             <?php endif; ?>
                         <?php elseif ($esPropio): ?>
-                            <span class="badge bg-danger">Vos</span>
+                            <span class="badge bg-acento">Vos</span>
                         <?php endif; ?>
                     </div>
 
